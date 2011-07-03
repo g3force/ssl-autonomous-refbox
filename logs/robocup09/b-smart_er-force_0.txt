@@ -1,0 +1,6 @@
+b-smart: yellow
+er-force: blue
+
+b-smart 1:0 er-force
+
+this log has been manipulated: the blue team has been given IDs afterwards.
