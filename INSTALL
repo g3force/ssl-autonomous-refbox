@@ -1,0 +1,45 @@
+This software needs: Ubuntu, OpenGL, QT (4 or higher), SWI-Prolog, Google Protobuf
+
+On Ubuntu, you can install everything by running
+	sudo apt-get install build-essentials autoconf libtool subversion freeglut3-dev qt4-qmake swi-prolog libqt4-dev libprotobuf-dev
+
+If you use Ubuntu 10.10 or lower, you will most likly have swi-prolog 5.8 installed which uses different binary names than 5.10, which is installed on later versions of Ubuntu.
+You have to do one of the following:
+1. Install swi-prolog 5.10 or later
+2. Do a	"sudo ln -s /usr/bin/plld /usr/bin/swipl-ld"
+3. Modify ssl-refbox/ssl-refbox.pro. Change
+QMAKE_LINK=swipl-ld ssl_refbox_rules_prolog.pl
+to
+QMAKE_LINK=plld ssl_refbox_rules_prolog.pl
+
+compile project by running
+	make
+in the project root.
+
+This will first build the proto files ./proto and the ssl-refbox afterwards.
+
+If you receive an error message that states, that no SWI-Prolog.h was found, you should check your pkg-config: /usr/lib/pkgconfig/swipl.pc
+On Ubuntu 10.10 and below, this file is called pl.pc
+It should look something like this, but check if the pathes really exist:
+################################################################################
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${libdir}/swi-prolog/include
+
+PLBASE=${libdir}/swi-prolog
+PLARCH=amd64
+PLLIBS=-lgmp -lrt -lreadline -lncurses -lm -lrt -ldl 
+PLLIB=-lswipl
+PLCFLAGS= -pthread -fPIC
+PLLDFLAGS=-rdynamic -Wl,-Bsymbolic-functions -pthread
+PLSOEXT=so
+
+Name: swipl
+Description: ISO/Edinburgh-style Prolog compiler
+Version: 5.10.4
+Libs: -lswipl
+Cflags: -I${includedir}
+################################################################################
+
+If you are looking for an IDE, you might have a look at qDevelop.

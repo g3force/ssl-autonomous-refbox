@@ -1,12 +1,15 @@
 
 TEMPLATE = app
 TARGET = ../bin/ssl-refbox
-CONFIG += qt debug console thread warn_on
+CONFIG += qt debug console thread warn_on link_pkgconfig
+PKGCONFIG += swipl
 
 DEPENDPATH += ../libbsmart ../proto
 INCLUDEPATH += ../
 
 LIBS += -lprotobuf -lglut
+
+QMAKE_LINK=swipl-ld ssl_refbox_rules_prolog.pl
 
 # Input
 HEADERS += glextra.h \
