@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <libbsmart/field.h>
 
+
 SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_, QWaitCondition* new_data_wait_condition_)
                     : data(data_), gamestate(gamestate_)
 {
@@ -91,7 +92,7 @@ void SSLVision::run()
             queue_filled = true;
             std::cout << "queue filled" << std::endl;
         }
-
+ 		
         //process percept through Particle Filter and other system
         if(queue_filled)
         {
@@ -381,15 +382,19 @@ void SSLVision::process_balls(Transformed_Percept& trans_perc)
 void SSLVision::process_blue(Transformed_Percept& trans_perc)
 {
     int n_blue_bots   = frame.robots_blue_size();
-
+	//std::cout << "blue bots: " << n_blue_bots << std::endl;
     for (int i = 0; i < n_blue_bots; ++i)
     {
         SSL_DetectionRobot robot = frame.robots_blue(i);
+        //std::cout <<robot.pixel_y() << "+" << robot_r << ">" << cam_height << std::endl;
         if ( (robot.pixel_y() + robot_r > cam_height)
               || (robot.pixel_y() - robot_r < 0)
               || (robot.pixel_x() + robot_r > cam_width)
-              || (robot.pixel_x() - robot_r < 0) )
-            continue;
+              || (robot.pixel_x() - robot_r < 0) ) {
+              	// dont now, what the purpose of this is... but the bots will not be shown with this...
+              	//continue;
+             	}
+            
         Robot_Percept pRobot;
         pRobot.x = robot.x();
         pRobot.y = robot.y();
@@ -418,8 +423,11 @@ void SSLVision::process_yellow(Transformed_Percept& trans_perc)
         if ( (robot.pixel_y() + robot_r > cam_height)
               || (robot.pixel_y() - robot_r < 0)
               || (robot.pixel_x() + robot_r > cam_width)
-              || (robot.pixel_x() - robot_r < 0) )
-            continue;
+              || (robot.pixel_x() - robot_r < 0) ) {
+              		// see above
+              		//continue;
+             	}
+            
         Robot_Percept pRobot;
         pRobot.x = robot.x();
         pRobot.y = robot.y();
