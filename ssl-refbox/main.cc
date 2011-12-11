@@ -8,23 +8,32 @@
 #include "ssl_refbox_rules.h"
 #include <string.h>
 
-int main(int argc, char* argv[])
-{
-    argv_global = argv[0];//externe Variable in ssl_refbox_rules.h
+int main(int argc, char* argv[]) {
+	// if you want to start reading the code, 
+	// you might want to look in guiactions.cc
+	// from there, actions start ;)
 
-    QApplication app(argc,argv);
-    QMainWindow* refbox = new QMainWindow;
-    Ui::GuiControls* gui = new Ui::GuiControls;
-    GuiActions act(gui, refbox);
-    gui->setupUi(refbox);
-    act.connectActions();
+	// external variable in ssl_refbox_rules.h
+	argv_global = argv[0];
 
-    glutInit(&argc, argv);
+	// initialize qt app and window
+	QApplication app(argc, argv);
+	QMainWindow* refbox = new QMainWindow;
+	Ui::GuiControls* gui = new Ui::GuiControls;
+	GuiActions act(gui, refbox);
+	gui->setupUi(refbox);
 
-    refbox->show();
+	// connect GUI components with actions
+	act.connectActions();
 
-    //main stuff
-    int res = app.exec();
+	// initialize the GLUT library
+	glutInit(&argc, argv);
 
-    return res;
+	// display MainWindow
+	refbox->show();
+
+	//main stuff
+	int res = app.exec();
+
+	return res;
 }
