@@ -31,7 +31,6 @@ private:
     int cur_timestamp;
     BSmart::Int_Vector internal_play_states;
 
-//    int spielzeit_alt;
     char refbox_cmd_alt;
     bool written;
     bool written_halftime;

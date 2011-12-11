@@ -56,7 +56,7 @@ public:
 
     void motion_update();
 
-    void sensor_update(); //Gewichtung aktualisieren
+    void sensor_update(); // update weighting
     void resample();
     void create_models();
 

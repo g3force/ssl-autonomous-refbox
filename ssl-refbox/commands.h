@@ -8,17 +8,17 @@
  * WRITTEN BY: Brett Browning
  */
 /* LICENSE:  =========================================================================
-    RoboCup F180 Referee Box Source Code Release
-  -------------------------------------------------------------------------
-    Copyright (C) 2003 RoboCup Federation
-  -------------------------------------------------------------------------
-    This software is distributed under the GNU General Public License,
-    version 2.  If you do not have a copy of this licence, visit
-    www.gnu.org, or write: Free Software Foundation, 59 Temple Place,
-    Suite 330 Boston, MA 02111-1307 USA.  This program is distributed
-    in the hope that it will be useful, but WITHOUT ANY WARRANTY,
-    including MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  ------------------------------------------------------------------------- 
+ RoboCup F180 Referee Box Source Code Release
+ -------------------------------------------------------------------------
+ Copyright (C) 2003 RoboCup Federation
+ -------------------------------------------------------------------------
+ This software is distributed under the GNU General Public License,
+ version 2.  If you do not have a copy of this licence, visit
+ www.gnu.org, or write: Free Software Foundation, 59 Temple Place,
+ Suite 330 Boston, MA 02111-1307 USA.  This program is distributed
+ in the hope that it will be useful, but WITHOUT ANY WARRANTY,
+ including MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ -------------------------------------------------------------------------
 
  */
 
@@ -62,7 +62,6 @@
 #define COMM_REDCARD_YELLOW    'r'
 #define COMM_REDCARD_BLUE      'R'
 
-
 /* game flow commands */
 #define COMM_RESTART		  'n'
 
@@ -77,7 +76,6 @@
 
 #define COMM_INDIRECT_YELLOW	  'i'
 #define COMM_INDIRECT_BLUE	  'I'
-
 
 // acceptable referee commands
 #define COMM_CMD_STRING      "iIfFpPkKnrRyYdDgGcztTaoO2h1 HsS"
