@@ -1,0 +1,5 @@
+*.o
+bin/ssl-refbox
+ssl-refbox/tags
+*.pb.h
+
