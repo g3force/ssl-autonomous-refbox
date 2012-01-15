@@ -6,6 +6,7 @@
 #include <libbsmart/game_states.h>
 #include "filter_data.h"
 #include <string.h>
+#include "../ConfigFile/ConfigFile.h"
 
 extern char* argv_global;
 

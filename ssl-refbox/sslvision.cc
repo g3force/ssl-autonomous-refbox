@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <libbsmart/field.h>
+#include <string>
+#include "../ConfigFile/ConfigFile.h"
 
 SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 		QWaitCondition* new_data_wait_condition_) :
@@ -19,10 +21,14 @@ SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 	socket = 0;
 	buffer = new char[MaxDataGramSize];
 
+	ConfigFile config( "ssl-refbox.conf" );
+	char* ssl_vision_ip;
+	uint16_t ssl_vision_port;
+	config.readInto( ssl_vision_ip, "ssl_vision_ip" );
+	config.readInto( ssl_vision_port, "ssl_vision_port" );
+
 	socket = new BSmart::Multicast_Socket();
-	socket->bind("224.5.23.2", 40101); //standard
-	//    socket->bind("224.5.23.2", 10205); //b-smart
-	//    socket->bind("224.23.5.11", 23511); //cmu
+	socket->bind(ssl_vision_ip, ssl_vision_port);
 
 	try {
 		socket->set_non_blocking();

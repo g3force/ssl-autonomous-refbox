@@ -1,13 +1,19 @@
 #include "refboxlistener.h"
 #include <libbsmart/referee_percept.h>
 #include "commands.h"
+#include "../ConfigFile/ConfigFile.h"
 
 RefboxListener::RefboxListener(BSmart::Game_States* gamestate_) :
 	gamestate(gamestate_) {
 	socket = 0;
+	ConfigFile config( "ssl-refbox.conf" );
+	char* refbox_ip;
+	uint16_t refbox_port;
+	config.readInto( refbox_ip, "refbox_ip" );
+	config.readInto( refbox_port, "refbox_port" );
 	try {
 		socket = new BSmart::Multicast_Socket();
-		socket->bind("224.5.23.1", 10001);
+		socket->bind(refbox_ip, refbox_port);
 		socket->set_non_blocking();
 	} catch (BSmart::IO_Exception e) {
 		std::cerr << "Could not open referee socket: " << e.what() << std::endl;

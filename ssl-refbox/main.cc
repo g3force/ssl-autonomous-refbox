@@ -5,14 +5,14 @@
 #include "guiactions.h"
 #include <iostream>
 #include <stdio.h>
-#include "ssl_refbox_rules.h"
-#include <string.h>
+
+using namespace std;
 
 int main(int argc, char* argv[]) {
 	// if you want to start reading the code, 
 	// you might want to look in guiactions.cc
 	// from there, actions start ;)
-
+	
 	// external variable in ssl_refbox_rules.h
 	argv_global = argv[0];
 

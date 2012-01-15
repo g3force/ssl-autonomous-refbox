@@ -7,7 +7,7 @@ CONFIG += qt \
  warn_on \
  link_pkgconfig
 PKGCONFIG += swipl
-DEPENDPATH += ../libbsmart ../proto
+DEPENDPATH += ../libbsmart ../proto ../ConfigFile
 INCLUDEPATH += ../
 LIBS += -lprotobuf -lglut
 QMAKE_LINK = swipl-ld ssl_refbox_rules_prolog.pl
@@ -29,7 +29,8 @@ HEADERS += glextra.h \
  ../proto/messages_robocup_ssl_detection.pb.h \
  ../proto/messages_robocup_ssl_geometry.pb.h \
  ../proto/messages_robocup_ssl_refbox_log.pb.h \
- ../proto/messages_robocup_ssl_wrapper.pb.h
+ ../proto/messages_robocup_ssl_wrapper.pb.h \
+ ../ConfigFile/ConfigFile.h
 FORMS += GuiControls.ui
 SOURCES += glextra.cc \
  gamearea.cc \
@@ -57,5 +58,6 @@ SOURCES += glextra.cc \
  ../proto/messages_robocup_ssl_detection.pb.cc \
  ../proto/messages_robocup_ssl_geometry.pb.cc \
  ../proto/messages_robocup_ssl_refbox_log.pb.cc \
- ../proto/messages_robocup_ssl_wrapper.pb.cc
+ ../proto/messages_robocup_ssl_wrapper.pb.cc \
+ ../ConfigFile/ConfigFile.cpp
 QT += opengl
