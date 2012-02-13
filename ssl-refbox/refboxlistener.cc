@@ -3,20 +3,36 @@
 #include "commands.h"
 #include "../ConfigFile/ConfigFile.h"
 
+// log4cxx
+using namespace log4cxx;
+LoggerPtr RefboxListener::logger(Logger::getLogger("refboxlistener"));
+
 RefboxListener::RefboxListener(BSmart::Game_States* gamestate_) :
 	gamestate(gamestate_) {
 	socket = 0;
+	string message = "";
+
 	ConfigFile config( "ssl-refbox.conf" );
-	char* refbox_ip;
-	uint16_t refbox_port;
-	config.readInto( refbox_ip, "refbox_ip" );
-	config.readInto( refbox_port, "refbox_port" );
+	const char* refbox_ip = config.read<string>("refbox_ip").c_str();
+	uint16_t refbox_port = config.read<uint16_t>( "refbox_port" );
+
+	std::ostringstream o;
+	if (!(o << refbox_port))
+		LOG4CXX_ERROR(logger, "Could not convert port to string");
+	message = "IP: ";
+	message += refbox_ip;
+	message += " port: ";
+	message += o.str();
+	LOG4CXX_DEBUG(logger, message);
+
 	try {
 		socket = new BSmart::Multicast_Socket();
 		socket->bind(refbox_ip, refbox_port);
 		socket->set_non_blocking();
 	} catch (BSmart::IO_Exception e) {
-		std::cerr << "Could not open referee socket: " << e.what() << std::endl;
+		message = "Could not open referee socket: ";
+		message += e.what();
+		LOG4CXX_DEBUG(logger, message);
 	}
 
 	buffer = new char[65536];

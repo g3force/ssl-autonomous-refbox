@@ -1,7 +1,7 @@
 
 .PHONY: ssl-refbox proto clean
 
-all: proto ssl-refbox
+all: proto log4cxx ssl-refbox
 
 ssl-refbox:
 	echo "building ssl-refbox"
@@ -13,8 +13,6 @@ proto:
 	make -C proto
 
 clean:
-	echo "cleaning ssl-refbox"
 	make -C ssl-refbox clean
-	echo "cleaning proto"
 	make -C proto clean
 

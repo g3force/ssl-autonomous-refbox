@@ -7,6 +7,8 @@
 #include <libbsmart/multicast_socket.h>
 #include <libbsmart/game_states.h>
 
+#include <log4cxx/logger.h>
+
 class RefboxListener : public QThread
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ public:
     RefboxListener(BSmart::Game_States*);
     ~RefboxListener();
     void run();
+    static log4cxx::LoggerPtr logger;
 
 public slots:
     void new_refbox_cmd(char);

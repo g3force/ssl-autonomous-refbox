@@ -6,6 +6,16 @@
 #include <iostream>
 #include <stdio.h>
 
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+
+LoggerPtr logger(Logger::getLogger("main"));
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -13,6 +23,13 @@ int main(int argc, char* argv[]) {
 	// you might want to look in guiactions.cc
 	// from there, actions start ;)
 	
+	try {
+		PropertyConfigurator::configure("log4j.conf");
+	} catch(Exception&) {
+		BasicConfigurator::configure();
+	}
+	LOG4CXX_INFO(logger, "Entering application.");
+
 	// external variable in ssl_refbox_rules.h
 	argv_global = argv[0];
 

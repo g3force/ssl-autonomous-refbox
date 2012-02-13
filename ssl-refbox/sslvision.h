@@ -13,6 +13,7 @@
 #include <libbsmart/game_states.h>
 #include "pre_filter_data.h"
 #include "log_control.h"
+#include <log4cxx/logger.h>
 
 struct Transformed_Percept
 {
@@ -43,6 +44,7 @@ public:
     ~SSLVision();
     void run();
     Log_Control* log_control;
+    static log4cxx::LoggerPtr logger;
 
 public slots:
     void record();

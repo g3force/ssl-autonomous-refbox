@@ -8,12 +8,17 @@
 #include <string>
 #include "../ConfigFile/ConfigFile.h"
 
+// log4cxx
+using namespace log4cxx;
+LoggerPtr SSLVision::logger(Logger::getLogger("sslvision"));
+
 SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 		QWaitCondition* new_data_wait_condition_) :
 	data(data_), gamestate(gamestate_) {
 	new_data_wait_condition = new_data_wait_condition_;
 	//robot radius in pixel
 	robot_r = 20;
+	string message = "";
 
 	cam_height = 580;
 	cam_width = 780;
@@ -22,18 +27,26 @@ SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 	buffer = new char[MaxDataGramSize];
 
 	ConfigFile config( "ssl-refbox.conf" );
-	char* ssl_vision_ip;
-	uint16_t ssl_vision_port;
-	config.readInto( ssl_vision_ip, "ssl_vision_ip" );
-	config.readInto( ssl_vision_port, "ssl_vision_port" );
+	const char* ssl_vision_ip = config.read<string>("ssl_vision_ip").c_str();
+	uint16_t ssl_vision_port = config.read<uint16_t>( "ssl_vision_port" );
 
-	socket = new BSmart::Multicast_Socket();
-	socket->bind(ssl_vision_ip, ssl_vision_port);
+	std::ostringstream o;
+	if (!(o << ssl_vision_port))
+		LOG4CXX_ERROR(logger, "Could not convert port to string");
+	message = "IP: ";
+	message += ssl_vision_ip;
+	message += " port: ";
+	message += o.str();
+	LOG4CXX_DEBUG(logger, message);
 
 	try {
+		socket = new BSmart::Multicast_Socket();
+		socket->bind(ssl_vision_ip, ssl_vision_port);
 		socket->set_non_blocking();
 	} catch (BSmart::IO_Exception e) {
-		std::cerr << "Receive_PM init " << e.what() << std::endl;
+		string message = "Receive_PM init ";
+		message += e.what();
+		LOG4CXX_DEBUG(logger, message);
 	}
 	fileName = QDir::homePath();
 
