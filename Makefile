@@ -15,4 +15,5 @@ proto:
 clean:
 	make -C ssl-refbox clean
 	make -C proto clean
+	rm ssl-refbox/*.orig
 

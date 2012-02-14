@@ -2,6 +2,9 @@ This software needs: Ubuntu (tested since 10.04), OpenGL, QT (4 or higher), SWI-
 
 On Ubuntu, you can install everything by running
 sudo apt-get install build-essential autoconf libtool subversion freeglut3-dev qt4-qmake swi-prolog libqt4-dev libprotobuf-dev liblog4cxx10-dev
+
+For development, you should also install astyle, a code formatter and beautifier :)
+sudo apt-get install astyle
 ################################################################################
 
 If you use Ubuntu 10.10 or lower, you will most likly have swi-prolog 5.8 installed which uses different binary names than 5.10, which is installed on later versions of Ubuntu.
