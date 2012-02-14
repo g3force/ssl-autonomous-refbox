@@ -5,7 +5,7 @@
 
 // log4cxx
 using namespace log4cxx;
-LoggerPtr RefboxListener::logger(Logger::getLogger("refboxlistener"));
+LoggerPtr RefboxListener::logger(Logger::getLogger("RefboxListener"));
 
 RefboxListener::RefboxListener(BSmart::Game_States* gamestate_) :
 	gamestate(gamestate_) {
@@ -86,7 +86,9 @@ void RefboxListener::execute() {
 	// counter grew bigger or there was
 	// a overflow after 2^32 referee commands.
 	if (has_new_data) {
-		std::cout << "got referee command: " << gsp.cmd << std::endl;
+		std::ostringstream o;
+		o << "got referee command: " << gsp.cmd;
+		LOG4CXX_DEBUG(logger, o.str());
 		new_refbox_cmd(gsp.cmd);
 		gsp_last = gsp;
 		has_new_data = false;
@@ -96,7 +98,6 @@ void RefboxListener::execute() {
 
 void RefboxListener::new_refbox_cmd(char comd) {
 	if (comd != gsp_last.cmd) {
-		//        std::cout << "got referee command: " << comd << std::endl;
 		gamestate->set_refbox_cmd(comd);
 		input_serial(comd);
 		gsp_last.cmd = comd;
@@ -104,7 +105,9 @@ void RefboxListener::new_refbox_cmd(char comd) {
 }
 
 void RefboxListener::input_serial(const char cmd) {
-	//    std::cout << "byte from serial: " << (int)cmd << "  " << cmd << std::endl;
+	std::ostringstream o;
+	o << "byte from serial: " << (int)cmd << "  " << cmd;
+	LOG4CXX_DEBUG(logger, o.str());
 
 	switch (cmd) {
 	case COMM_START:
@@ -195,7 +198,9 @@ void RefboxListener::input_serial(const char cmd) {
 		update_game_state(Referee_Percept::BEGIN_PENALTY_SHOOTOUT);
 		break;
 	default:
-		std::cout << "Unknown byte from serial: " << (int) cmd << std::endl;
+		std::ostringstream o;
+		o << "Unknown byte from serial: " << (int) cmd;
+		LOG4CXX_DEBUG(logger, o.str());
 	}
 
 }
@@ -346,8 +351,9 @@ void RefboxListener::update_game_state(const int referee_signal) {
 		break;
 
 	default:
-		std::cerr << "Unknown Referee-Signal " << referee_signal
-				<< " received!" << std::endl;
+		std::ostringstream o;
+		o << "Unknown Referee-Signal " << referee_signal << " received!";
+		LOG4CXX_DEBUG(logger, o.str());
 	}
 }
 

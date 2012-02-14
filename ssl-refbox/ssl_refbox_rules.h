@@ -7,6 +7,7 @@
 #include "filter_data.h"
 #include <string.h>
 #include "../ConfigFile/ConfigFile.h"
+#include <log4cxx/logger.h>
 
 extern char* argv_global;
 
@@ -18,6 +19,7 @@ public:
     SSL_Refbox_Rules(QWaitCondition*, Filter_Data*, BSmart::Game_States*);
     ~SSL_Refbox_Rules();
     void run();
+    static log4cxx::LoggerPtr logger;
 
 signals:
     void new_filter_data();

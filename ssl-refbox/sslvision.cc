@@ -10,7 +10,7 @@
 
 // log4cxx
 using namespace log4cxx;
-LoggerPtr SSLVision::logger(Logger::getLogger("sslvision"));
+LoggerPtr SSLVision::logger(Logger::getLogger("SSLVision"));
 
 SSLVision::SSLVision(Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 		QWaitCondition* new_data_wait_condition_) :
@@ -76,7 +76,7 @@ void SSLVision::run() {
 		switch (exec) {
 		// camera id > 1
 		case -2:
-			std::cout << "Very strange" << std::endl;
+			LOG4CXX_DEBUG(logger, "Very strange");
 			break;
 
 			//no frame received
@@ -93,11 +93,11 @@ void SSLVision::run() {
 		if (queue_filled) {
 			if (tf_percept_queue_all.size() < 10) {
 				queue_filled = false;
-				std::cout << "queue empty" << std::endl;
+				LOG4CXX_DEBUG(logger, "queue empty");
 			}
 		} else if (tf_percept_queue_all.size() > 30) {
 			queue_filled = true;
-			std::cout << "queue filled" << std::endl;
+			LOG4CXX_DEBUG(logger, "queue filled");
 		}
 
 		// process percept through Particle Filter and other system
@@ -239,8 +239,11 @@ int SSLVision::execute(Transformed_Percept& trans_perc) {
 	while (recv(frame) && !play) {
 		//test camera_id
 		if (frame.camera_id() > 1) {
-			std::cout << "Got Percept from CAM: " << frame.camera_id() << "\n";
 			trans_perc.sleep_time = standard_sleep_time;
+			std::ostringstream o;
+			o << "Got Percept from CAM: "; 
+			o << frame.camera_id();
+			LOG4CXX_DEBUG(logger,  o.str());
 			return -2;
 		}
 		npc = 0;
@@ -322,10 +325,12 @@ int SSLVision::recv(SSL_DetectionFrame& frame) {
 		len = socket->read(buffer, MaxDataGramSize);
 	} catch (BSmart::Multicast_Socket::No_Data_Available nd) {
 		if (++npc >= 10) {
-			// std::cout << "No data!" << std::endl;
+//			LOG4CXX_WARN(logger, "No data!");
 		}
 	} catch (BSmart::IO_Exception e) {
-		// std::cerr << "sslvision.cc::recv(): " << e.what() << std::endl;
+		std::ostringstream o;
+		// o << "sslvision.cc::recv(): " << e.what();
+		LOG4CXX_ERROR(logger, o.str());
 		return 0;
 	}
 
@@ -334,7 +339,7 @@ int SSLVision::recv(SSL_DetectionFrame& frame) {
 
 	// read camera position out of geometry data
 	if (packet.has_geometry()) {
-		//std::cout << "geometry" << std::endl;
+		//LOG4CXX_DEBUG(logger, "geometry");
 		SSL_GeometryData geo_data = packet.geometry();
 		int n_cams = geo_data.calib_size();
 		for (int i = 0; i < n_cams; ++i) {
@@ -575,8 +580,9 @@ void SSLVision::record() {
 		}
 	} else {
 		rec = false;
-		if (!end_record())
-			std::cout << "Recording successfully saved" << std::endl;
+		if (!end_record()) {
+			LOG4CXX_DEBUG(logger, "Recording successfully saved");
+		}
 	}
 }
 
@@ -584,7 +590,7 @@ void SSLVision::start_record() {
 	logs.clear_log();
 	emit
 	change_record_button("  End Record  ");
-	std::cout << "Start Recording" << std::endl;
+	LOG4CXX_DEBUG(logger, "Start Recording");
 }
 
 int SSLVision::end_record() {
@@ -616,20 +622,22 @@ int SSLVision::end_record() {
 	change_record_button("Record Logfile");
 
 	if (!logs.SerializeToOstream(&output)) {
-		std::cout << "Failed to write logfile." << std::endl;
+		LOG4CXX_DEBUG(logger, "Failed to write logfile.");
 		return -1;
 	}
 
 	output.close();
-	std::cout << logs.log_size() << " Frames recorded, written to "
-			<< fileName.toAscii().constData() << std::endl;
+	std::ostringstream o;
+	o << logs.log_size() << " Frames recorded, written to "
+			<< fileName.toAscii().constData();
+	LOG4CXX_DEBUG(logger, o.str());
 	return 0;
 }
 
 void SSLVision::play_record() {
 	if (!play) {
 		if (!rec) {
-			std::cout << "Start Play Record" << std::endl;
+			LOG4CXX_INFO(logger, "Start Play Record");
 			if (!start_play_record()) {
 				play = true;
 			}
@@ -653,28 +661,36 @@ int SSLVision::start_play_record() {
 	// What data shall I read?
 	fileName = QFileDialog::getOpenFileName((QWidget*) this->parent(),
 			tr("Open Logfile"), fileName, tr("Log Files (*.log)"));
-	std::cout << "fileName: " << fileName.toAscii().constData() << std::endl;
+	std::ostringstream o;
+	o << "fileName: " << fileName.toAscii().constData();
+	LOG4CXX_DEBUG(logger, o.str());
 
 	// Read the existing log.
 	std::fstream input(fileName.toAscii().constData(),
 			std::ios::in | std::ios::binary);
 	if (!input) {
-		std::cout << fileName.toAscii().constData() << ": File not found."
-				<< std::endl;
+		o.str("");
+		o << fileName.toAscii().constData() << ": File not found.";
+		LOG4CXX_ERROR(logger, o.str());
 		return -1;
 	}
 	// critical line
 	else if (!logs.ParseFromIstream(&input)) {
-		std::cout << "Failed to parse Logfile." << std::endl;
+		LOG4CXX_ERROR(logger, "Failed to parse Logfile.");
 		return -1;
 	}
 
-	std::cout << "File successfully loaded" << std::endl;
+	LOG4CXX_INFO(logger, "File successfully loaded");
 	if (logs.IsInitialized() && logs.log_size() > 0
 			&& logs.log(0).IsInitialized()) {
-		std::cout << "Size of logfile: " << logs.log_size() << std::endl;
-		std::cout << "Start Command: " << logs.mutable_log(0)->refbox_cmd()
-				<< std::endl;
+		o.str("");
+		o << "Size of logfile: " << logs.log_size();
+		LOG4CXX_INFO(logger, o.str());
+		
+		o.str("");
+		o << "Start Command: " << logs.mutable_log(0)->refbox_cmd();
+		LOG4CXX_INFO(logger, o.str());
+
 		log_control->reset(logs.log_size());
 		emit
 		log_size(logs.log_size());
@@ -683,7 +699,7 @@ int SSLVision::start_play_record() {
 		initializeSlider(0, logs.log_size(), 1, 100, 1800);
 		emit showLogControl(true);
 	} else {
-		std::cout << "Logfile seems to be empty or damaged" << std::endl;
+		LOG4CXX_DEBUG(logger, "Logfile seems to be empty or damaged");
 		return -1;
 	}
 	input.close();
@@ -703,5 +719,5 @@ void SSLVision::end_play_record() {
 	showLogControl(false);
 	emit
 	change_play_button("Play Record");
-	std::cout << "Stop Playing Record" << std::endl;
+	LOG4CXX_DEBUG(logger, "Stop Playing Record" );
 }

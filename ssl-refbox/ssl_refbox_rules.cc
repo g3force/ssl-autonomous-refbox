@@ -4,6 +4,10 @@
 #include <SWI-Prolog.h>
 #include <libbsmart/field.h>
 
+// log4cxx
+using namespace log4cxx;
+LoggerPtr SSL_Refbox_Rules::logger(Logger::getLogger("SSL_Refbox_Rules"));
+
 char* argv_global;
 
 SSL_Refbox_Rules::SSL_Refbox_Rules(QWaitCondition* rules_wait_condition_,
@@ -234,9 +238,10 @@ void SSL_Refbox_Rules::run() {
 		for (std::vector<Broken_Rule>::iterator brit =
 				broken_rule_vector.begin(); brit != broken_rule_vector.end();) {
 			if ((cur_timestamp - brit->when_broken) > 5000) {
-				std::cout << cur_timestamp << " - " << brit->when_broken
-						<< " rule " << brit->rule_number << " removed"
-						<< std::endl;
+				std::ostringstream o;
+				o << cur_timestamp << " - " << brit->when_broken
+						<< " rule " << brit->rule_number << " removed";
+				LOG4CXX_DEBUG(logger, o.str());
 				broken_rule_vector.erase(brit);
 			} else {
 				brit++;
@@ -279,8 +284,10 @@ void SSL_Refbox_Rules::run() {
 
 					last_break = rule;
 					last_msg = cur_frm;
-					std::cout << cur_frm << " Rule " << rule << " broken by "
-							<< team << " | " << id << std::endl;
+					std::ostringstream o;
+					o << cur_frm << " Rule " << rule << " broken by "
+							<< team << " | " << id; 
+					LOG4CXX_DEBUG(logger, o.str());
 				}
 
 				// new broken rule
@@ -410,7 +417,10 @@ void SSL_Refbox_Rules::run() {
 		for (std::vector<Broken_Rule>::iterator brit =
 				broken_rule_vector.begin(); brit != broken_rule_vector.end(); ++brit) {
 			if (broken_rule_gui.rule_number == brit->rule_number) {
-				// std::cout << cur_timestamp << " Regel " << broken_rule_gui.rule_number << " überschrieben" << std::endl;
+				std::ostringstream o;
+				o << cur_timestamp << " Regel " << broken_rule_gui.rule_number << 
+					" überschrieben";
+				LOG4CXX_DEBUG(logger, o.str());
 				brit->when_broken = broken_rule_gui.when_broken;
 				brit->freekick_pos = broken_rule_gui.freekick_pos;
 				brit->rule_breaker = broken_rule_gui.rule_breaker;
