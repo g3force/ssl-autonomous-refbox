@@ -1,7 +1,7 @@
 
 .PHONY: ssl-refbox proto clean
 
-all: proto log4cxx ssl-refbox
+all: proto ssl-refbox
 
 ssl-refbox:
 	echo "building ssl-refbox"
