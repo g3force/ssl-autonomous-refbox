@@ -18,39 +18,40 @@ LoggerPtr logger(Logger::getLogger("main"));
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
-	// if you want to start reading the code, 
-	// you might want to look in guiactions.cc
-	// from there, actions start ;)
-	
-	try {
-		PropertyConfigurator::configure("log4j.conf");
-	} catch(Exception&) {
-		BasicConfigurator::configure();
-	}
-	LOG4CXX_INFO(logger, "Entering application.");
+int main(int argc, char* argv[])
+{
+        // if you want to start reading the code,
+        // you might want to look in guiactions.cc
+        // from there, actions start ;)
 
-	// external variable in ssl_refbox_rules.h
-	argv_global = argv[0];
+        try {
+                PropertyConfigurator::configure("log4j.conf");
+        } catch (Exception&) {
+                BasicConfigurator::configure();
+        }
+        LOG4CXX_INFO(logger, "Entering application.");
 
-	// initialize qt app and window
-	QApplication app(argc, argv);
-	QMainWindow* refbox = new QMainWindow;
-	Ui::GuiControls* gui = new Ui::GuiControls;
-	GuiActions act(gui, refbox);
-	gui->setupUi(refbox);
+        // external variable in ssl_refbox_rules.h
+        argv_global = argv[0];
 
-	// connect GUI components with actions
-	act.connectActions();
+        // initialize qt app and window
+        QApplication app(argc, argv);
+        QMainWindow* refbox = new QMainWindow;
+        Ui::GuiControls* gui = new Ui::GuiControls;
+        GuiActions act(gui, refbox);
+        gui->setupUi(refbox);
 
-	// initialize the GLUT library
-	glutInit(&argc, argv);
+        // connect GUI components with actions
+        act.connectActions();
 
-	// display MainWindow
-	refbox->show();
+        // initialize the GLUT library
+        glutInit(&argc, argv);
 
-	//main stuff
-	int res = app.exec();
+        // display MainWindow
+        refbox->show();
 
-	return res;
+        //main stuff
+        int res = app.exec();
+
+        return res;
 }
