@@ -1,0 +1,13 @@
+
+[Desktop Entry]
+Type=Application
+Version=1.0
+Encoding=UTF-8
+Name=ssl-autonomous-refbox
+GenericName=ssl-autonomous-refbox
+Comment=ssl-autonomous-refbox
+Icon=/usr/share/ssl-autonomous-refbox/icon.png
+TryExec=ssl-autonomous-refbox
+Exec=ssl-autonomous-refbox
+Terminal=0
+Categories=Application;

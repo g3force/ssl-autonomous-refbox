@@ -1,7 +1,10 @@
 *.o
-bin/ssl-refbox
+bin/ssl-autonomous-refbox
 ssl-refbox/tags
+ssl-refbox/ssl-refbox.pro
 *.pb.h
 *.swp
 log
 *.orig
+.bzr
+.bzrignore

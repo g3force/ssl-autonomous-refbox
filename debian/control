@@ -1,0 +1,16 @@
+Source: ssl-autonomous-refbox
+Section: misc
+Priority: extra
+Maintainer: ssl-autonomouse-refbox team <ssl-auto-ref@googlegroups.com>
+Uploaders: Nicolai Ommer <nicolai.ommer@gmail.com>, Daniel Andres Lopez <andreslopez.daniel@gmail.com>, Felix Pistorius <f.pistorius@web.de>
+Build-Depends:debhelper (>> 7),autoconf,libtool,freeglut3-dev,qt4-qmake,swi-prolog,libqt4-dev,libprotobuf-dev,liblog4cxx10-dev,protobuf-compiler,libqt4-opengl-dev
+Build-Depends-Indep: 
+Standards-Version: 3.8.4
+Homepage: http://code.google.com/p/ssl-autonomous-refbox/
+
+Package: ssl-autonomous-refbox
+Architecture: any
+Depends: ${misc:Depends},${shlibs:Depends}
+Description: This package provides the ssl-autonomous-refbox
+ ssl = small size league
+ part of the RoboCup

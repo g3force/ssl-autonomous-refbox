@@ -14,44 +14,45 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LoggerPtr logger(Logger::getLogger("main"));
+LoggerPtr logger ( Logger::getLogger ( "main" ) );
 
 using namespace std;
 
-int main(int argc, char* argv[])
+int main ( int argc, char* argv[] )
 {
-        // if you want to start reading the code,
-        // you might want to look in guiactions.cc
-        // from there, actions start ;)
+    // if you want to start reading the code,
+    // you might want to look in guiactions.cc
+    // from there, actions start ;)
 
-        try {
-                PropertyConfigurator::configure("log4j.conf");
-        } catch (Exception&) {
-                BasicConfigurator::configure();
-        }
-        LOG4CXX_INFO(logger, "Entering application.");
+    try {
+        PropertyConfigurator::configure ( "log4j.conf" );
+    } catch ( Exception& ) {
+        BasicConfigurator::configure();
+		Logger::getRootLogger()->removeAllAppenders();
+    }
+    LOG4CXX_INFO ( logger, "Entering application." );
 
-        // external variable in ssl_refbox_rules.h
-        argv_global = argv[0];
+    // external variable in ssl_refbox_rules.h
+    argv_global = argv[0];
 
-        // initialize qt app and window
-        QApplication app(argc, argv);
-        QMainWindow* refbox = new QMainWindow;
-        Ui::GuiControls* gui = new Ui::GuiControls;
-        GuiActions act(gui, refbox);
-        gui->setupUi(refbox);
+    // initialize qt app and window
+    QApplication app ( argc, argv );
+    QMainWindow* refbox = new QMainWindow;
+    Ui::GuiControls* gui = new Ui::GuiControls;
+    GuiActions act ( gui, refbox );
+    gui->setupUi ( refbox );
 
-        // connect GUI components with actions
-        act.connectActions();
+    // connect GUI components with actions
+    act.connectActions();
 
-        // initialize the GLUT library
-        glutInit(&argc, argv);
+    // initialize the GLUT library
+    glutInit ( &argc, argv );
 
-        // display MainWindow
-        refbox->show();
+    // display MainWindow
+    refbox->show();
 
-        //main stuff
-        int res = app.exec();
+    //main stuff
+    int res = app.exec();
 
-        return res;
+    return res;
 }

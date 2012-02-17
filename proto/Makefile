@@ -7,4 +7,4 @@ all: messages_robocup_ssl_detection.pb.h messages_robocup_ssl_geometry.pb.h mess
 	protoc --cpp_out=. $<
 
 clean:
-	rm *.cc *.h
+	rm -f *.cc *.h
