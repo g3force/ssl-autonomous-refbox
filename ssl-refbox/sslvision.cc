@@ -7,9 +7,11 @@
 #include <libbsmart/field.h>
 #include <string>
 #include "../ConfigFile/ConfigFile.h"
+#include "global.h"
 
 // log4cxx
 using namespace log4cxx;
+using namespace std;
 LoggerPtr SSLVision::logger ( Logger::getLogger ( "SSLVision" ) );
 
 SSLVision::SSLVision ( Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
@@ -18,7 +20,6 @@ SSLVision::SSLVision ( Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
 {
     LOG4CXX_DEBUG ( logger, "create SSLVisison object" );
 
-    ConfigFile config ( "ssl-autonomous-refbox.conf" );
     std::ostringstream o;
 
     new_data_wait_condition = new_data_wait_condition_;
@@ -26,17 +27,17 @@ SSLVision::SSLVision ( Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
     robot_r = 20;
     string message = "";
 
-    cam_height = config.read<int> ( "cam_height", 580 );
-    cam_width = config.read<int> ( "cam_width", 780 );
+    cam_height = Global::config.read<int> ( "cam_height", 580 );
+    cam_width = Global::config.read<int> ( "cam_width", 780 );
     o.str ( "" );
     o << "cam_height=" << cam_height << " cam_width=" << cam_width;
-    LOG4CXX_DEBUG ( logger, o.str() );
+    LOG4CXX_INFO ( logger, o.str() );
 
     socket = 0;
     buffer = new char[MaxDataGramSize];
 
-    const char* ssl_vision_ip = config.read<string> ( "ssl_vision_ip", "224.5.23.2" ).c_str();
-    uint16_t ssl_vision_port = config.read<uint16_t> ( "ssl_vision_port", 40101 );
+    string ssl_vision_ip = Global::config.read<string> ( "ssl_vision_ip", "224.5.23.2" );
+    uint16_t ssl_vision_port = Global::config.read<uint16_t> ( "ssl_vision_port", 40101 );
 
     o.str ( "" );
     if ( ! ( o << ssl_vision_port ) )
@@ -45,11 +46,11 @@ SSLVision::SSLVision ( Pre_Filter_Data* data_, BSmart::Game_States* gamestate_,
     message += ssl_vision_ip;
     message += " port: ";
     message += o.str();
-    LOG4CXX_DEBUG ( logger, message );
+    LOG4CXX_INFO ( logger, message );
 
     try {
         socket = new BSmart::Multicast_Socket();
-        socket->bind ( ssl_vision_ip, ssl_vision_port );
+        socket->bind ( ssl_vision_ip.c_str(), ssl_vision_port );
         socket->set_non_blocking();
     } catch ( BSmart::IO_Exception e ) {
         string message = "Receive_PM init ";

@@ -26,6 +26,7 @@ HEADERS += glextra.h \
  pf_tester.h \
  field_hardware.h \
  ssl_refbox_rules.h \
+ global.h \
  ../proto/messages_robocup_ssl_detection.pb.h \
  ../proto/messages_robocup_ssl_geometry.pb.h \
  ../proto/messages_robocup_ssl_refbox_log.pb.h \
@@ -46,6 +47,7 @@ SOURCES += glextra.cc \
  pf_tester.cc \
  field_hardware.cc \
  ssl_refbox_rules.cc \
+ global.cc \
  ../libbsmart/pose.cc \
  ../libbsmart/vector2.cc \
  ../libbsmart/multicast_socket.cc \

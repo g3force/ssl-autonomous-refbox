@@ -1,7 +1,8 @@
 #include "refboxlistener.h"
 #include <libbsmart/referee_percept.h>
 #include "commands.h"
-#include "../ConfigFile/ConfigFile.h"
+//#include "../ConfigFile/ConfigFile.h"
+#include "global.h"
 
 // log4cxx
 using namespace log4cxx;
@@ -13,9 +14,8 @@ RefboxListener::RefboxListener ( BSmart::Game_States* gamestate_ ) :
     socket = 0;
     string message = "";
 
-    ConfigFile config ( "ssl-autonomous-refbox.conf" );
-    const char* refbox_ip = config.read<string> ( "refbox_ip", "224.5.23.1" ).c_str();
-    uint16_t refbox_port = config.read<uint16_t> ( "refbox_port", 10001 );
+    string refbox_ip = Global::config.read<string> ( "refbox_ip", "224.5.23.1" );
+    uint16_t refbox_port = Global::config.read<uint16_t> ( "refbox_port", 10001 );
 
     std::ostringstream o;
     if ( ! ( o << refbox_port ) )
@@ -24,16 +24,16 @@ RefboxListener::RefboxListener ( BSmart::Game_States* gamestate_ ) :
     message += refbox_ip;
     message += " port: ";
     message += o.str();
-    LOG4CXX_DEBUG ( logger, message );
+    LOG4CXX_INFO ( logger, message );
 
     try {
         socket = new BSmart::Multicast_Socket();
-        socket->bind ( refbox_ip, refbox_port );
+        socket->bind ( refbox_ip.c_str(), refbox_port );
         socket->set_non_blocking();
     } catch ( BSmart::IO_Exception e ) {
         message = "Could not open referee socket: ";
         message += e.what();
-        LOG4CXX_DEBUG ( logger, message );
+        LOG4CXX_ERROR ( logger, message );
     }
 
     buffer = new char[65536];

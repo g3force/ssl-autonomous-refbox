@@ -5,18 +5,30 @@
 #include "guiactions.h"
 #include <iostream>
 #include <stdio.h>
+#include <sys/stat.h>
 
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/consoleappender.h>
+#include <log4cxx/fileappender.h>
+
+#include "global.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace std;
 
 LoggerPtr logger ( Logger::getLogger ( "main" ) );
 
-using namespace std;
+
+bool fexists ( string filename )
+{
+    std::ifstream ifile ( filename.c_str() );
+    return ifile;
+}
 
 int main ( int argc, char* argv[] )
 {
@@ -24,13 +36,31 @@ int main ( int argc, char* argv[] )
     // you might want to look in guiactions.cc
     // from there, actions start ;)
 
-    try {
+    if ( fexists ( "log4j.conf" ) ) {
         PropertyConfigurator::configure ( "log4j.conf" );
-    } catch ( Exception& ) {
-        BasicConfigurator::configure();
-		Logger::getRootLogger()->removeAllAppenders();
+    } else {
+        string home = getenv ( "HOME" );
+        if ( home.empty() ) {
+            home = "/root";
+        }
+        mkdir ( string ( home + "/.ssl-autonomous-refbox" ).c_str(), 0775 );
+
+        string logfile = home + "/.ssl-autonomous-refbox/refbox.log";
+        LayoutPtr layout ( new PatternLayout ( "\%6r \%-5p \%-16c{1} \%-50m \%n" ) );
+        FileAppender * fileAppender = new FileAppender ( layout, logfile, false );
+        ConsoleAppender * consoleAppender = new ConsoleAppender ( layout );
+
+        helpers::Pool p;
+        fileAppender->activateOptions ( p );
+
+        BasicConfigurator::configure ( AppenderPtr ( fileAppender ) );
+        BasicConfigurator::configure ( AppenderPtr ( consoleAppender ) );
+        Logger::getRootLogger()->setLevel ( Level::getInfo() );
     }
+
     LOG4CXX_INFO ( logger, "Entering application." );
+
+    Global::loadConfig();
 
     // external variable in ssl_refbox_rules.h
     argv_global = argv[0];
@@ -56,3 +86,4 @@ int main ( int argc, char* argv[] )
 
     return res;
 }
+

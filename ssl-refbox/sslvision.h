@@ -44,7 +44,6 @@ public:
     ~SSLVision();
     void run();
     Log_Control* log_control;
-    static log4cxx::LoggerPtr logger;
 
 public slots:
     void record();
@@ -68,6 +67,7 @@ signals:
     void new_refbox_cmd(char);
 
 private:
+    static log4cxx::LoggerPtr logger;
     int execute(Transformed_Percept&);
     int standard_sleep_time;
     QWaitCondition* new_data_wait_condition;

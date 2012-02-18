@@ -26,12 +26,12 @@ public:
     RefboxListener(BSmart::Game_States*);
     ~RefboxListener();
     void run();
-    static log4cxx::LoggerPtr logger;
 
 public slots:
     void new_refbox_cmd(char);
 
 private:
+    static log4cxx::LoggerPtr logger;
     void execute();
     BSmart::Multicast_Socket* socket;
     BSmart::Game_States* gamestate;

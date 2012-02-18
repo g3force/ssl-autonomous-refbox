@@ -1,10 +1,14 @@
+*.log
 *.o
-bin/ssl-autonomous-refbox
-ssl-refbox/tags
-ssl-refbox/ssl-refbox.pro
 *.pb.h
 *.swp
 log
 *.orig
 .bzr
 .bzrignore
+bin/ssl-autonomous-refbox
+ssl-refbox/tags
+ssl-refbox/ssl-refbox.pro
+ssl-refbox/moc_*
+ssl-refbox/Makefile
+ssl-refbox/ui_GuiControls.h
