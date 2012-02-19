@@ -1,3 +1,10 @@
+ssl-autonomous-refbox (0.1ubuntu2) lucid; urgency=low
+
+  * no make clean done before creating package... might be the cause for
+    broken binary
+
+ -- Nicolai Ommer <nicolai.ommer@gmail.com>  Sun, 19 Feb 2012 12:16:40 +0100
+
 ssl-autonomous-refbox (0.1ubuntu1) lucid; urgency=low
 
   * fixed error in configure script

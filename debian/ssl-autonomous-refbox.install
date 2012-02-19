@@ -1,3 +1,2 @@
 debian/ssl-autonomous-refbox.desktop /usr/share/applications/
 debian/icon.png usr/share/ssl-autonomous-refbox/
-bin/ssl-autonomous-refbox.conf etc/

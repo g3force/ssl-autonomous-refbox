@@ -20,8 +20,8 @@ void Global::loadConfig()
         home = "/root";
     }
     string configPath[] = {configFile,
-                           "/etc/" + configFile,
-                           home + "/.ssl-autonomous-refbox/" + configFile
+                           home + "/.ssl-autonomous-refbox/" + configFile,
+                           "/etc/" + configFile
                           };
 
     for ( int i=0; i<3; i++ ) {
