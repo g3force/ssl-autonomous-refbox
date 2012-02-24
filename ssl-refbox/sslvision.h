@@ -74,6 +74,7 @@ private:
 
     int  recv(SSL_DetectionFrame&);
     void process_balls(Transformed_Percept&);
+    void process(Transformed_Percept&, char);
     void process_blue(Transformed_Percept&);
     void process_yellow(Transformed_Percept&);
     void reset_data(int);

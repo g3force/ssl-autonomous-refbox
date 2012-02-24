@@ -249,6 +249,7 @@ int SSLVision::execute ( Transformed_Percept& trans_perc )
     bool has_new_frame = false;
     int time_diff = standard_sleep_time;
 
+	// while a frame is received
     while ( recv ( frame ) && !play ) {
         //test camera_id
         if ( frame.camera_id() > 1 ) {
@@ -264,8 +265,10 @@ int SSLVision::execute ( Transformed_Percept& trans_perc )
         // process frame
         trans_perc.frame_received = frame.t_capture();
         process_balls ( trans_perc );
-        process_yellow ( trans_perc );
-        process_blue ( trans_perc );
+        process ( trans_perc, 1 ); // blue
+        process ( trans_perc, 0 ); // yellow
+//        process_yellow ( trans_perc );
+//        process_blue ( trans_perc );
 
         if ( rec ) {
             logs.add_log();
@@ -300,8 +303,10 @@ int SSLVision::execute ( Transformed_Percept& trans_perc )
             trans_perc.frame_received
             = BSmart::Systemcall::get_current_system_time();
             process_balls ( trans_perc );
-            process_yellow ( trans_perc );
-            process_blue ( trans_perc );
+			process ( trans_perc, 1 ); // blue
+			process ( trans_perc, 0 ); // yellow
+//            process_yellow ( trans_perc );
+//            process_blue ( trans_perc );
         }
 
         trans_perc.current_frame = log_control->get_current_frame();
@@ -326,6 +331,7 @@ int SSLVision::execute ( Transformed_Percept& trans_perc )
     // distance between frames in ms
     if ( has_new_frame ) {
         trans_perc.sleep_time = time_diff;
+		//LOG4CXX_DEBUG ( logger, "return execute() with 1" );
         return 1;
     }
     trans_perc.sleep_time = standard_sleep_time;
@@ -367,9 +373,14 @@ int SSLVision::recv ( SSL_DetectionFrame& frame )
     }
     if ( packet.has_detection() ) {
         frame = packet.detection();
+		std::ostringstream o;
+		o << "return recv() with ";
+		o << len;
+		//LOG4CXX_DEBUG ( logger, o.str() );
         return len;
-    } else
+    } else {
         return 0;
+	}
 }
 
 void SSLVision::process_balls ( Transformed_Percept& trans_perc )
@@ -397,14 +408,18 @@ void SSLVision::process_balls ( Transformed_Percept& trans_perc )
     }
 }
 
-void SSLVision::process_blue ( Transformed_Percept& trans_perc )
+/**
+ * color: 1 -> blue, 0 -> yellow
+ */
+void SSLVision::process ( Transformed_Percept& trans_perc, char color )
 {
-    int n_blue_bots = frame.robots_blue_size();
-    for ( int i = 0; i < n_blue_bots; ++i ) {
-        SSL_DetectionRobot robot = frame.robots_blue ( i );
+	int n_bots = color==1?frame.robots_blue_size():frame.robots_yellow_size();
+	
+    for ( int i = 0; i < n_bots; ++i ) {
+        SSL_DetectionRobot robot = color==1?frame.robots_blue ( i ):frame.robots_yellow ( i );
 
         /* following code doesn't work anymore...
-         * It seems, that it expects the origin of co-ordinates not in the
+         * It seems, that it expects the origin of coordinates not in the
          * middle of the field and thus are not negative...
          * Anyway, without this code, everything runs fine :)
          */
@@ -419,7 +434,7 @@ void SSLVision::process_blue ( Transformed_Percept& trans_perc )
         pRobot.x = robot.x();
         pRobot.y = robot.y();
         pRobot.id = robot.robot_id();
-        pRobot.color = SSLRefbox::Colors::BLUE;
+        pRobot.color = color==1?SSLRefbox::Colors::BLUE:SSLRefbox::Colors::YELLOW;
         pRobot.rotation_known = robot.has_orientation();
         if ( pRobot.rotation_known )
             pRobot.rotation = robot.orientation();
@@ -429,43 +444,80 @@ void SSLVision::process_blue ( Transformed_Percept& trans_perc )
         pRobot.cam = frame.camera_id();
         pRobot.timestamp = frame.t_capture() * 1000;
 
-        trans_perc.robots[1][pRobot.id].push_back ( pRobot );
+        trans_perc.robots[(int)color][pRobot.id].push_back ( pRobot );
     }
 }
 
-void SSLVision::process_yellow ( Transformed_Percept& trans_perc )
-{
-    int n_yellow_bots = frame.robots_yellow_size();
-
-    for ( int i = 0; i < n_yellow_bots; ++i ) {
-        SSL_DetectionRobot robot = frame.robots_yellow ( i );
-        /* see above */
-        //		if ((robot.pixel_y() + robot_r > cam_height) || (robot.pixel_y()
-        //				- robot_r < 0) || (robot.pixel_x() + robot_r > cam_width)
-        //				|| (robot.pixel_x() - robot_r < 0)) {
-        //			continue;
-        //		}
-
-        Robot_Percept pRobot;
-        pRobot.x = robot.x();
-        pRobot.y = robot.y();
-        pRobot.color = SSLRefbox::Colors::YELLOW;
-        pRobot.rotation_known = robot.has_orientation();
-        pRobot.id = robot.robot_id();
-        if ( pRobot.rotation_known )
-            pRobot.rotation = robot.orientation();
-
-        pRobot.confidence = robot.confidence() * 100;
-        pRobot.framenumber = frame.frame_number();
-        pRobot.cam = frame.camera_id();
-        pRobot.timestamp = frame.t_capture() * 1000;
-
-        trans_perc.robots[0][pRobot.id].push_back ( pRobot );
-    }
-}
+//void SSLVision::process_blue ( Transformed_Percept& trans_perc )
+//{
+//    int n_blue_bots = frame.robots_blue_size();
+//    for ( int i = 0; i < n_blue_bots; ++i ) {
+//        SSL_DetectionRobot robot = frame.robots_blue ( i );
+//
+//        /* following code doesn't work anymore...
+//         * It seems, that it expects the origin of coordinates not in the
+//         * middle of the field and thus are not negative...
+//         * Anyway, without this code, everything runs fine :)
+//         */
+//        //if ( (robot.pixel_y() + robot_r > cam_height)
+//        //|| (robot.pixel_y() - robot_r < 0)
+//        //|| (robot.pixel_x() + robot_r > cam_width)
+//        //|| (robot.pixel_x() - robot_r < 0) ) {
+//        //continue;
+//        //}
+//
+//        Robot_Percept pRobot;
+//        pRobot.x = robot.x();
+//        pRobot.y = robot.y();
+//        pRobot.id = robot.robot_id();
+//        pRobot.color = SSLRefbox::Colors::BLUE;
+//        pRobot.rotation_known = robot.has_orientation();
+//        if ( pRobot.rotation_known )
+//            pRobot.rotation = robot.orientation();
+//
+//        pRobot.confidence = robot.confidence() * 100;
+//        pRobot.framenumber = frame.frame_number();
+//        pRobot.cam = frame.camera_id();
+//        pRobot.timestamp = frame.t_capture() * 1000;
+//
+//        trans_perc.robots[1][pRobot.id].push_back ( pRobot );
+//    }
+//}
+//
+//void SSLVision::process_yellow ( Transformed_Percept& trans_perc )
+//{
+//    int n_yellow_bots = frame.robots_yellow_size();
+//
+//    for ( int i = 0; i < n_yellow_bots; ++i ) {
+//        SSL_DetectionRobot robot = frame.robots_yellow ( i );
+//        /* see above */
+//        //		if ((robot.pixel_y() + robot_r > cam_height) || (robot.pixel_y()
+//        //				- robot_r < 0) || (robot.pixel_x() + robot_r > cam_width)
+//        //				|| (robot.pixel_x() - robot_r < 0)) {
+//        //			continue;
+//        //		}
+//
+//        Robot_Percept pRobot;
+//        pRobot.x = robot.x();
+//        pRobot.y = robot.y();
+//        pRobot.color = SSLRefbox::Colors::YELLOW;
+//        pRobot.rotation_known = robot.has_orientation();
+//        pRobot.id = robot.robot_id();
+//        if ( pRobot.rotation_known )
+//            pRobot.rotation = robot.orientation();
+//
+//        pRobot.confidence = robot.confidence() * 100;
+//        pRobot.framenumber = frame.frame_number();
+//        pRobot.cam = frame.camera_id();
+//        pRobot.timestamp = frame.t_capture() * 1000;
+//
+//        trans_perc.robots[0][pRobot.id].push_back ( pRobot );
+//    }
+//}
 
 void SSLVision::reset_data ( int cam )
 {
+    //LOG4CXX_DEBUG ( logger, "reset_data" );
     Ball_Percept pBall;
     //clear ball vector
     data->clear_balls ( cam );

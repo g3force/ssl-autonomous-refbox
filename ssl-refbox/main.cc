@@ -62,7 +62,7 @@ int main ( int argc, char* argv[] )
 
     Global::loadConfig();
 
-    // external variable in ssl_refbox_rules.h
+    // external variable in ssl_refbox_rules.h for initializing prolog
     argv_global = argv[0];
 
     // initialize qt app and window
@@ -83,6 +83,8 @@ int main ( int argc, char* argv[] )
 
     //main stuff
     int res = app.exec();
+
+    LOG4CXX_INFO ( logger, "Exit application" );
 
     return res;
 }

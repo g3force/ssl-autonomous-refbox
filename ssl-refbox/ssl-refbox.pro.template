@@ -1,4 +1,5 @@
 TEMPLATE = app
+PATH += "/usr/bin"
 TARGET = ../bin/ssl-autonomous-refbox
 CONFIG += qt \
  debug \
