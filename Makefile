@@ -20,7 +20,7 @@ clean:
 	rm -f ssl-refbox/ssl-refbox.pro
 	rm -f ssl-refbox/Makefile
 	rm -f bin/ssl-autonomous-refbox
-	rm -f bin/ssl-autonomous-refbox.log
+	rm -f bin/ssl-autonomous-refbox.log*
 
 install:
 	mkdir -p ${DESTDIR}/usr/bin/
