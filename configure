@@ -2,17 +2,19 @@
 
 cd ssl-refbox
 
-plld --version > /dev/null
-if [ "$?" == "0" ]; then
-	echo "plld installed"
-	sed 's/swipl-ld/plld/g' ssl-refbox.pro.template > ssl-refbox.pro.tmp
-	sed 's/swipl/pl/g' ssl-refbox.pro.tmp > ssl-refbox.pro
-	rm -f ssl-refbox.pro.tmp
-	echo "ssl-refbox.pro generated"
-else
-	echo "swipl-ld installed"
-	cp ssl-refbox.pro.template ssl-refbox.pro
-	echo "ssl-refbox.pro generated"
+if [ ! -f ssl-refbox.pro ]; then
+	plld --version > /dev/null
+	if [ "$?" == "0" ]; then
+		echo "plld installed"
+		sed 's/swipl-ld/plld/g' ssl-refbox.pro.template > ssl-refbox.pro.tmp
+		sed 's/swipl/pl/g' ssl-refbox.pro.tmp > ssl-refbox.pro
+		rm -f ssl-refbox.pro.tmp
+		echo "ssl-refbox.pro generated"
+	else
+		echo "swipl-ld installed"
+		cp ssl-refbox.pro.template ssl-refbox.pro
+		echo "ssl-refbox.pro generated"
+	fi
+	
+	echo "finished configuring"
 fi
-
-echo "finished configuring"

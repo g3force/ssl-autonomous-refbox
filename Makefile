@@ -4,6 +4,8 @@
 all: proto ssl-refbox
 
 ssl-refbox:
+	echo "Configure, if not done already"
+	./configure
 	echo "Running qmake"
 	qmake -o ssl-refbox/Makefile ssl-refbox/ssl-refbox.pro
 	echo "building ssl-refbox"
