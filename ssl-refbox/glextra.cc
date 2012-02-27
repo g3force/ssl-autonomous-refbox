@@ -50,7 +50,9 @@ const std::string GLExtra::rulenames[42] = { "Robot Number exceeded", //1
         "Rule does not exist", //41
         "Offside position" //42
                                            };
-
+/**
+ * @class GLExtra
+ */
 GLExtra::GLExtra()
 {
     current_ball_percepts.clear();

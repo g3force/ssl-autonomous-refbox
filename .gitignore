@@ -17,3 +17,4 @@ ConfigFile/tester
 *.pb.h
 *.pb.cc
 
+/doc

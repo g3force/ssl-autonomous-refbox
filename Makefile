@@ -1,5 +1,5 @@
 
-.PHONY: ssl-refbox proto clean install
+.PHONY: ssl-refbox proto clean install doxygen
 
 all: proto ssl-refbox
 
@@ -30,3 +30,5 @@ install:
 	mkdir -p ${DESTDIR}/etc/
 	if [ ! -f "${DESTDIR}/etc/ssl-autonomous-refbox.conf" ]; then cp bin/ssl-autonomous-refbox.conf ${DESTDIR}/etc/; fi
 
+doxygen:
+	doxygen doxygen.conf
