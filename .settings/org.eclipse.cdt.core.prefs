@@ -1,3 +1,12 @@
-#Sat Feb 25 17:14:03 CET 2012
+#Thu Mar 01 14:26:42 CET 2012
+indexer/indexerId=org.eclipse.cdt.core.domsourceindexer
+indexer/indexUnusedHeadersWithDefaultLang=false
+indexer/skipImplicitReferences=false
+indexer/filesToParseUpFront=
+indexer/skipTypeReferences=false
+indexer/indexUnusedHeadersWithAlternateLang=false
+indexer/skipReferences=false
+indexer/skipMacroReferences=false
+indexer/indexAllFiles=false
 eclipse.preferences.version=1
-indexer/indexerId=org.eclipse.cdt.core.nullindexer
+indexer/useHeuristicIncludeResolution=true
