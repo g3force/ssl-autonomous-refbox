@@ -1,3 +1,10 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%															%%
+%%		Definitions and helper predicates 									%%
+%%															%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Position, e.g. for saving freekick position
 :- dynamic position/4.
@@ -215,10 +222,25 @@ distance_to_right_def_area(X1,Y1,Dist) :- field('field',Field_width,_,_,_,_,Defe
                                           Dist is (Dist_tmp - Defense_radius) , !.
 
 
-%Regel0: Nur Regeln checken falls interner und externer Status gleich oder interner Status == running
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%															%%
+%%		Rules and Laws												%%
+%%															%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel0: Nur Regeln checken falls interner und externer Status gleich oder interner Status == running			%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_zero :- get_global_play_state(X) , (get_local_play_state(X) ; get_local_play_state(2)).
 
-%Regel30: Ball im Spielfeld, nur im running
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel30: Ball im Spielfeld, nur im running										%%
+%% coresspond to law 9: The Ball In and Out of Play									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ball_in_game(Field_width,Field_height,Pos_x,Pos_y) :- Pos_x > -(Field_width/2) , Pos_x < Field_width/2 , Pos_y > -(Field_height/2) , Pos_y < Field_height/2.
 
 rule_thirty_before :- get_local_play_state(2).
@@ -247,10 +269,16 @@ goal_out_right(Pos_x,Pos_y,Last_touched_team) :- field('field',Field_width,Field
 %goal kick right below
 goal_out_right(Pos_x,Pos_y,Last_touched_team) :- field('field',Field_width,Field_height,_,_,_,_,_,_) , left_team('left_team',Left_team) , Pos_x > (Field_width/2) , (Last_touched_team =:= Left_team) , Pos_y < 0 , Pos_x_new is (Field_width/2)-500, Pos_y_new is -(Field_height/2)+100 , set_freekick_pos(Pos_x_new,Pos_y_new,0).
 
-%Regel16: Roboterposition im Stopped
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel16: Roboterposition im Stopped											%%
+%% coresspond to law ?: 												%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_sixteen :- get_local_play_state(1) , roboter(Team,ID,Pos_x_bot,Pos_y_bot,_,_,1) , ball_location('ball',Pos_x_ball,Pos_y_ball,_,_,_,_) , distance(Pos_x_bot,Pos_y_bot,Pos_x_ball,Pos_y_ball,Dist) , Dist < 500 , set_rule_breaker(Team,ID).
 
-%Regel15: Roboterabstand bei Freekick
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel15: Roboterabstand bei Freekick											%%
+%% coresspond to law 13: Free Kicks											%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_fifteen_before :- freekick_blue ; freekick_yellow.
 freekick_yellow :- get_local_play_state(3).
 freekick_yellow :- get_local_play_state(5).
@@ -271,18 +299,28 @@ rule_fifteen_distance_to_opp_defence_area :- roboter(Team,ID,Pos_x,Pos_y,_,_,1) 
                                            Dist =< 200 ,
                                            set_rule_breaker(Team,ID).
 
-%Regel14: Roboterpositionen bei Kickoff
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel14: Roboterpositionen bei Kickoff										%%
+%% coresspond to law 8: The Start and Restart of Play									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_fourteen_before :- kickoff_blue ; kickoff_yellow.
 kickoff_blue :- get_local_play_state(X) , (X =:= 9 ; X =:= 13).
 kickoff_yellow :- get_local_play_state(X) , (X =:= 3 ; X =:= 7).
 rule_fourteen :- rule_fourteen_before , get_left(Left_team) , roboter(Team,ID,Pos_x,_,_,_,1) , ( (Left_team =:= Team , Pos_x > 0) ; (Left_team =\= Team , Pos_x < 0) ) , set_rule_breaker(Team,ID).
 
-%Regel3: Torwartwechsel
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel3: Torwartwechsel												%%
+%% coresspond to law 3: The Number of Robots										%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_three :- (check_left_goalie ; check_right_goalie).
 check_left_goalie :- field('field',Field_width,_,_,_,_,_,_,_) , get_left(Left_team) , goalie('left_goalie',Left_team,Id1) , roboter(Left_team,Id1,Pos_x1,Pos_y1,_,_,1) , distance(Pos_x1,Pos_y1,-(Field_width/2),0,Dist1) , roboter(Left_team,Id2,Pos_x2,Pos_y2,_,_,1) , Id1 =\= Id2 , distance(Pos_x2,Pos_y2,-(Field_width/2),0,Dist2) , Dist2 < Dist1 , set_rule_breaker(Left_team,Id2).
 check_right_goalie :- field('field',Field_width,_,_,_,_,_,_,_) , get_left(Left_team) , goalie('right_goalie',Team,Id1) , Team =\= Left_team , roboter(Team,Id1,Pos_x1,Pos_y1,_,_,1) , distance(Pos_x1,Pos_y1,(Field_width/2),0,Dist1) , roboter(Team,Id2,Pos_x2,Pos_y2,_,_,1) , Id1 =\= Id2 , distance(Pos_x2,Pos_y2,(Field_width/2),0,Dist2) , Dist2 < Dist1 , set_rule_breaker(Team,Id2).
 
-%Regel29: Ball im Tor, nur im running, nur wenn oft genug berührt und nur wenn nicht Flying (Also auch Regel 13 erfüllt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel29: Ball im Tor													%%
+%% coresspond to law ?: 												%%
+%% nur im running, nur wenn oft genug berührt und nur wenn nicht Flying (Also auch Regel 13 erfüllt)			%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ball_in_right_goal :- field('field',Field_width,_,Goal_width,Goal_Depth,Goal_Height,_,_,_) , ball_location('ball',Pos_x,Pos_y,Pos_z,_,_,_) , Pos_x > (Field_width/2) , Pos_x < ((Field_width/2)+Goal_Depth) , Pos_y > -(Goal_width/2) , Pos_y < (Goal_width/2) , Pos_z < Goal_Height.
 ball_in_left_goal :- field('field',Field_width,_,Goal_width,Goal_Depth,Goal_Height,_,_,_) , ball_location('ball',Pos_x,Pos_y,Pos_z,_,_,_) , Pos_x < -(Field_width/2) , Pos_x > -((Field_width/2)+Goal_Depth) , Pos_y > -(Goal_width/2) , Pos_y < (Goal_width/2) , Pos_z < Goal_Height.
 second_touch :- ball_status('ball',Ltt,Ltid,Status,X) , Status =\= 3 , X > 0 , set_rule_breaker(Ltt,Ltid).
@@ -294,7 +332,10 @@ rule_twentynine_after(Side) :- get_left(Left_team) , ( (Side =:= 1 , goal(Left_t
 set_goals(X,Y) :- retract(result('result',_,_)) , assert(result('result',X,Y)).
 goal(X) :- get_standing(Y,B) , Z is Y+abs(X-1) , C is B+X , set_goals(Z,C).
 
-%Regel17: Roboterpositionen beim Penalty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel17: Roboterpositionen beim Penalty										%%
+%% coresspond to law 14: The Penalty Kick										%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 penalty_yellow :- get_local_play_state(X) , (X =:= 4 ; X =:= 8).
 penalty_blue :- get_local_play_state(X) , (X =:= 10 ; X =:= 14).
 rule_seventeen :- rule_seventeen_positions.
@@ -324,32 +365,56 @@ penalty_yellow_on_right_goal :- field('field',Field_width,_,_,_,_,_,_,Penalty_ma
 penalty_yellow_on_right_goal :- field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , Min_dist is (Field_width-Penalty_mark-400) , not((roboter(0,_,Pos_x_kicker,_,_,_,1) , Pos_x_kicker > Min_dist)) , set_rule_breaker(0,12).
 penalty_yellow_on_right_goal :- field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , Min_dist is (Field_width-Penalty_mark-400) , roboter(0,Kicker_id,Pos_x_kicker,_,_,_,1) , roboter(0,Other_id,Pos_x_other,_,_,_,1) , Kicker_id =\= Other_id , Pos_x_kicker > Min_dist , Pos_x_other > Min_dist , ( ( Pos_x_kicker > Pos_x_other , set_rule_breaker(1,Other_id)) ; ( Pos_x_kicker < Pos_x_other , set_rule_breaker(0,Kicker_id)) ).
 
-%Regel28: Timeout-Zeit überschritten
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel28: Timeout-Zeit überschritten											%%
+%% coresspond to law 28: The Duration of the Match									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_twentyeight :- get_timeout_start_yellow(Start) , Start =\= 0 , get_timestamp(Timestamp) , get_timeout_time_yellow(Old) , New is Old+(Timestamp-Start) , New > 300000.
 rule_twentyeight :- get_timeout_start_blue(Start) , Start =\= 0 , get_timestamp(Timestamp) , get_timeout_time_blue(Old) , New is Old+(Timestamp-Start) , New > 300000.
 
-%Regel27: Anzahl Timeouts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel27: Anzahl Timeouts												%%
+%% coresspond to law 28: The Duration of the Match									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_twentyseven :- get_timeout_start_yellow(Start) , Start =\= 0 , timeouts('timeouts',Yellow,_) , Yellow > 4.
 rule_twentyseven :- get_timeout_start_blue(Start) , Start =\= 0 , timeouts('timeouts',_,Blue) , Blue > 4.
 
-%Regel24: Gesamt-Zeit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel24: Gesamt-Zeit													%%
+%% coresspond to law 28: The Duration of the Match									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_twentyfour :- get_total_play_time_start(Start) , Start =\= 0 , get_total_play_time_total(Total) , get_total_play_time_start(Start) , get_timestamp(Now) , Sum is Total+(Now-Start) , Sum > 600000.
 
-%Regel18: Nicht-Torhüter im Strafraum
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel18: Nicht-Torhüter im Strafraum											%%
+%% coresspond to law ?: 												%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_eighteen :- get_local_play_state(2) , goalie('left_goalie',Team,Id1) , roboter(Team,Id2,Pos_x2,Pos_y2,_,_,1) , Id1 =\= Id2 , distance_to_left_def_area(Pos_x2,Pos_y2,Dist) , Dist < 0 , set_rule_breaker(Team,Id2).
 rule_eighteen :- get_local_play_state(2) , goalie('right_goalie',Team,Id1) , roboter(Team,Id2,Pos_x2,Pos_y2,_,_,1) , Id1 =\= Id2 , distance_to_right_def_area(Pos_x2,Pos_y2,Dist) , Dist < 0 , set_rule_breaker(Team,Id2).
 
-%Regel23: 10 Sekunden Begrenzung bei Freistößen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel23: 10 Sekunden Begrenzung bei Freistößen									%%
+%% coresspond to law 9: The Ball In and Out of Play									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_twentythree :- get_local_play_state(PS) , ( (PS =:= 3) ; (PS =:= 4) ; (PS =:= 5) ; (PS =:= 6) ; (PS =:= 9) ; (PS =:= 10) ; (PS =:= 11) ; (PS =:= 12) ) , get_ten_seconds(Ten) , Ten =\= 0 , get_timestamp(Time) , Diff is Time-Ten , Diff > 10000 , set_local_play_state(1) , set_local_next_play_state(2).
 
-%Regel19: Torwartberührung
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel19: Torwartberührung												%%
+%% coresspond to law 12: Fouls and Misconduct										%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_nineteen :- get_local_play_state(2) , goalie('left_goalie',Team1,Id1) , roboter(Team1,Id1,Pos_x1,Pos_y1,_,_,1) , roboter(Team2,Id2,Pos_x2,Pos_y2,_,_,1) , Team1 =\= Team2 , distance_to_left_def_area(Pos_x2,Pos_y2,Dist1) , Dist1 < 0 , distance(Pos_x1,Pos_y1,Pos_x2,Pos_y2,Dist2) , Dist2 < 200 , set_rule_breaker(Team2,Id2) , Freekick_x is (Pos_x2 + ((Pos_x1-Pos_x2)/2)) , Freekick_y is (Pos_y2 + ((Pos_y1-Pos_y2)/2)) , set_freekick_pos(Freekick_x,Freekick_y,0) , New is 5+(Team1*6) , set_next_play_state(New).
 rule_nineteen :- get_local_play_state(2) , goalie('right_goalie',Team1,Id1) , roboter(Team1,Id1,Pos_x1,Pos_y1,_,_,1) , roboter(Team2,Id2,Pos_x2,Pos_y2,_,_,1) , Team1 =\= Team2 , distance_to_right_def_area(Pos_x2,Pos_y2,Dist1) , Dist1 < 0 , distance(Pos_x1,Pos_y1,Pos_x2,Pos_y2,Dist2) , Dist2 < 200 , set_rule_breaker(Team2,Id2) , Freekick_x is (Pos_x2 + ((Pos_x1-Pos_x2)/2)) , Freekick_y is (Pos_y2 + ((Pos_y1-Pos_y2)/2)) , set_freekick_pos(Freekick_x,Freekick_y,0) , New is 5+(Team1*6) , set_next_play_state(New).
 
-%Regel22: Freistossausführung im before_
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel22: Freistossausführung im before_										%%
+%% coresspond to law 9: The Ball In and Out of Play									%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_twentytwo :- get_local_play_state(PS) , ( (PS =:= 7) ; (PS =:= 8) ; (PS =:= 13) ; (PS =:= 14) ) , ball_status('ball',Ltt,Ltid,_,Touch) , Touch > 0 , set_local_play_state(1) , set_local_next_play_state(PS), set_rule_breaker(Ltt,Ltid).
 
-%Regel1: Es sind nur max 5 Roboter pro Team erlaubt
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel1: Es sind nur max 5 Roboter pro Team erlaubt									%%
+%% coresspond to law 2: The Number of Robots										%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_one :- rule_one(0) ; rule_one(1).
 rule_one(Team) :- roboter(Team,ID1,_,_,_,_,1) , 
                   roboter(Team,ID2,_,_,_,_,1) , ID1 =\= ID2 ,
@@ -358,8 +423,11 @@ rule_one(Team) :- roboter(Team,ID1,_,_,_,_,1) ,
                   roboter(Team,ID5,_,_,_,_,1) , ID1 =\= ID5 , ID2 =\= ID5 , ID3 =\= ID5 , ID4 =\= ID5 ,
                   roboter(Team,ID6,_,_,_,_,1) , ID1 =\= ID6 , ID2 =\= ID6 , ID3 =\= ID6 , ID4 =\= ID6 , ID5 =\= ID6 ,
                   set_rule_breaker(Team,ID6).
-
-%Regel42: Abseits
+                  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Regel42: Abseits													%%
+%% coresspond to no law, in law 11 (Offside) it is declared, that there is no offside					%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_fourtytwo :- check_offside(1) , retract(check_offside(_)) , assert(check_offside(0)) , rule_fourtytwo_offside.
 %Left Team
 rule_fourtytwo_offside :- ball_status('ball',Ltt,Ltid,_,_) , get_left(Ltt) , roboter(Ltt,Ltid,Pos_xt,_,_,_,1) , roboter(Ltt,ID1,Pos_x1,Pos_y1,_,_,1) , Ltid =\= ID1 , Pos_x1 > Pos_xt , Pos_x1 > 0 , not(( roboter(Team,ID2,Pos_x2,_,_,_,1) , Team =\= Ltt , roboter(Team,ID3,Pos_x3,_,_,_,1) , ID2 =\= ID3 , Pos_x2 > Pos_x1 , Pos_x3 > Pos_x1 )) , set_rule_breaker(Ltt,ID1) , set_freekick_pos(Pos_x1,Pos_y1,0).
