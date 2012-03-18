@@ -10,7 +10,13 @@
 #include "pre_filter_data.h"
 #include "filter_data.h"
 #include "colors.h"
+#include <log4cxx/logger.h>
 
+/**
+ * @class GLExtra
+ * @brief Do all the drawing of the field
+ * This class provides all the functions that draw e.g. robots, ball, field and rules
+ */
 class GLExtra
 {
 public:
@@ -46,16 +52,10 @@ public:
     void bglDrawRulesystemData();
 
 private:
+    static log4cxx::LoggerPtr logger;
     ///Plot all symmetric points to given (x,y). \see bglBresCircle
     static void symmPlotPoints(const int& x, const int& y, const Quadrant& q);
 
-    /**
-    * Draw a circle with radius @c r using the Bresenham algorithm
-    * (center is the current position)
-    * @see http://www.cs.fit.edu/~wds/classes/graphics/Rasterize/rasterize/
-    * @param r
-    * @param q Enables drawing partial bow of a circle.
-    */
     static void bglBresCircle(const int& r, const Quadrant& q = Q_ALL);
 
     ///Since glPointSize is not available on all graphic cards

@@ -6,11 +6,13 @@
 
 using namespace std;
 
-class Global
-{
+/**
+ * @class Global
+ * @brief class for storing global stuff
+ */
+class Global {
 private:
-    static log4cxx::LoggerPtr logger;
-	//static string configFile;
+	static log4cxx::LoggerPtr logger;
 public:
 	static ConfigFile config;
 	static void loadConfig();

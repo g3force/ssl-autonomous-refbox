@@ -10,8 +10,19 @@ using namespace std;
 // name logger is used in another class :o don't know why...
 LoggerPtr logger42 ( Logger::getLogger ( "Global" ) );
 
-ConfigFile Global::config; //( configFile );
+/**
+ * @brief global reference to the config file
+ */
+ConfigFile Global::config;
 
+/**
+ * @brief Load config file and provide it with public variable
+ * Tries to load the config file from following order:
+ * 1. In the current folder
+ * 2. In the users home folder (/home/user/.ssl-autonomous-refbox/)
+ * 3. In /etc/
+ * The config file has to be called ssl-autonomous-refbox.conf
+ */
 void Global::loadConfig()
 {
     string configFile = "ssl-autonomous-refbox.conf";
