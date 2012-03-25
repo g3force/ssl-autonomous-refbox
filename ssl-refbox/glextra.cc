@@ -321,13 +321,17 @@ void GLExtra::bglDrawFilterData()
     //current robot percepts
     for ( Robot_Percept_List::iterator it = current_robot_percepts.begin(); it
             != current_robot_percepts.end(); it++ ) {
-        draw_robot ( it->x, it->y, it->color, -1, -1, false );
+    	double rotation = 0;
+    	if(it->rotation_known) rotation = it->rotation;
+        draw_robot ( it->x, it->y, it->color, rotation, -1, -1, false );
+
     }
 
     //robot samples
     for ( Robot_Sample_List::iterator it = robot_samples.begin(); it
             != robot_samples.end(); it++ ) {
-        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::WHITE, -1, false );
+        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::WHITE, it->pos.rotation, -1, -1, false );
+        LOG4CXX_DEBUG(logger, "Whoohu, there was a sample. Dont know what it is actually and it does not appear in log file play mode...");
     }
 
     //robot models
@@ -337,7 +341,7 @@ void GLExtra::bglDrawFilterData()
             != robot_models.end(); it++ ) {
         last_touched = ( ( it->team == ball_model.last_touched_robot.x )
                          && ( it->id == ball_model.last_touched_robot.y ) );
-        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::RED, it->team,
+        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::RED, it->pos.rotation, it->team,
                      it->id, last_touched );
         //        draw_robot(it->pos.x, it->pos.y, SSLRefbox::Colors::RED, quadric, it->id, false);
     }
@@ -378,7 +382,7 @@ void GLExtra::bglDrawFilterData()
  * @param id
  * @param last_touched
  */
-void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
+void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color, double rotation,
                            int team, int id, bool last_touched )
 {
     glPushMatrix();
@@ -401,11 +405,13 @@ void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
         case SSLRefbox::Colors::WHITE: //white: sample
             glColor3d ( 1., 1., 1. );
             glBegin ( GL_LINE_STRIP );
+            if(rotation != 0) glVertex3d ( 0., 0., 0. );
             break;
 
         case SSLRefbox::Colors::RED: //red: model
             glColor3d ( 1., 0., 0. );
             glBegin ( GL_LINE_STRIP );
+            if(rotation != 0) glVertex3d ( 0., 0., 0. );
             break;
 
         default: //black: default, should not happen
@@ -417,7 +423,7 @@ void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
             glBegin ( GL_TRIANGLE_FAN );
     }
 
-    double f = 0.;
+    double f = rotation;
     for ( int i = 0; i <= 12; ++i ) {
         glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
                      sin ( f ) * BSmart::Field::robot_radius, 0 );

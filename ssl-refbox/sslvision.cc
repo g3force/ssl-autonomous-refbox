@@ -339,7 +339,8 @@ int SSLVision::recv(SSL_DetectionFrame& frame) {
 		len = socket->read(buffer, MaxDataGramSize);
 	} catch (BSmart::Multicast_Socket::No_Data_Available nd) {
 		if (++npc >= 10) {
-			LOG4CXX_WARN(logger, "No data!");
+			// Happens quite frequently ;)
+			//LOG4CXX_WARN(logger, "No data!");
 		}
 	} catch (BSmart::IO_Exception e) {
 		std::ostringstream o;
@@ -427,14 +428,17 @@ void SSLVision::process(Transformed_Percept& trans_perc, char color) {
 //		|| (robot.pixel_x() - robot_r < 0) ) {
 //		continue;
 //		}
+
 		Robot_Percept pRobot;
 		pRobot.x = robot.x();
 		pRobot.y = robot.y();
 		pRobot.id = robot.robot_id();
 		pRobot.color = color == 1 ? SSLRefbox::Colors::BLUE : SSLRefbox::Colors::YELLOW;
 		pRobot.rotation_known = robot.has_orientation();
-		if (pRobot.rotation_known)
+		if (pRobot.rotation_known) {
 			pRobot.rotation = robot.orientation();
+			//LOG4CXX_DEBUG(logger, pRobot.rotation);
+		}
 
 		pRobot.confidence = robot.confidence() * 100;
 		pRobot.framenumber = frame.frame_number();
@@ -642,7 +646,6 @@ int SSLVision::end_record() {
 void SSLVision::play_record() {
 	if (!play) {
 		if (!rec) {
-			LOG4CXX_INFO( logger, "Start Play Record");
 			if (!start_play_record()) {
 				play = true;
 			}
@@ -657,6 +660,7 @@ void SSLVision::play_record() {
  * @return error code
  */
 int SSLVision::start_play_record() {
+	LOG4CXX_INFO( logger, "Start Play Record");
 	//change fileName into directory
 	if (fileName != QDir::homePath()) {
 		int last_slash = 0;
@@ -719,6 +723,7 @@ int SSLVision::start_play_record() {
  * @brief Stop play of a log file record
  */
 void SSLVision::end_play_record() {
+	LOG4CXX_INFO( logger, "Start end_play_record");
 	play = false;
 	log_control->reset(0);
 	//    current_frame = 0;
@@ -729,5 +734,5 @@ void SSLVision::end_play_record() {
 	showLogControl(false);
 	emit
 	change_play_button("Play Record");
-	LOG4CXX_DEBUG( logger, "Stop Playing Record");
+	LOG4CXX_DEBUG( logger, "End end_play_record");
 }
