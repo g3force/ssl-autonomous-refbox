@@ -22,10 +22,7 @@
 							<builder autoBuildTarget="ssl-refbox" enableAutoBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1900583685" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1783616885" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1496982537" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.include.paths.1659856301" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt/QtGui"/>
-								</option>
+								<option id="gnu.cpp.compiler.option.include.paths.1659856301" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.570194881" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.2023902270" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
@@ -114,11 +111,11 @@
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1023220259.76097534;cdt.managedbuild.toolchain.gnu.base.1023220259.76097534.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1961135856;cdt.managedbuild.tool.gnu.cpp.compiler.input.1526059374">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1023220259;cdt.managedbuild.toolchain.gnu.base.1023220259.1647857256;cdt.managedbuild.tool.gnu.c.compiler.base.2023902270;cdt.managedbuild.tool.gnu.c.compiler.input.984724533">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
-		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1023220259;cdt.managedbuild.toolchain.gnu.base.1023220259.1647857256;cdt.managedbuild.tool.gnu.cpp.compiler.base.1496982537;cdt.managedbuild.tool.gnu.cpp.compiler.input.570194881">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1023220259;cdt.managedbuild.toolchain.gnu.base.1023220259.1647857256;cdt.managedbuild.tool.gnu.c.compiler.base.2023902270;cdt.managedbuild.tool.gnu.c.compiler.input.984724533">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1023220259.76097534;cdt.managedbuild.toolchain.gnu.base.1023220259.76097534.;cdt.managedbuild.tool.gnu.c.compiler.base.180149191;cdt.managedbuild.tool.gnu.c.compiler.input.2105808512">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>

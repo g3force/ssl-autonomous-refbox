@@ -1,3 +1,7 @@
+/**
+ * @file refboxlistener.h
+ * @brief RefboxListener header file
+ */
 #ifndef REFBOXLISTENER
 #define REFBOXLISTENER
 
@@ -9,6 +13,11 @@
 
 #include <log4cxx/logger.h>
 
+/**
+ * @class RefboxListener
+ * @brief Listen for refbox commands on socket and deal with it
+ * Socket will be opened, and listened to. Commands will be catched and actions executed, if necessary
+ */
 class RefboxListener : public QThread
 {
     Q_OBJECT
