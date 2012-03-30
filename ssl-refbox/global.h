@@ -1,3 +1,7 @@
+/**
+ * @file global.h
+ * @brief Global header file
+ */
 #ifndef GLOBAL
 #define GLOBAL
 #include <string>

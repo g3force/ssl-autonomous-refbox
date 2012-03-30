@@ -1,6 +1,6 @@
 /**
  * @file glextra.cc
- * @brief includes class GLExtra
+ * @brief GLExtra source file
  *
  */
 #include <GL/gl.h>
@@ -375,12 +375,12 @@ void GLExtra::bglDrawFilterData()
 
 /**
  * @brief Draw a robot with given color to given position and mark, if it was last touched robot.
- * @param x
- * @param y
- * @param color
- * @param team
- * @param id
- * @param last_touched
+ * @param x x_position
+ * @param y y_position
+ * @param color SSLRefbox::Colors::Color, also important for team, sample and model
+ * @param team team
+ * @param id robot id
+ * @param last_touched is this the bot that was last touched?
  */
 void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color, double rotation,
                            int team, int id, bool last_touched )

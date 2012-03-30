@@ -1,6 +1,6 @@
 /**
  * @file sslvision.cc
- * @brief Contains SSLVision class
+ * @brief SSLVision source file
  */
 #include "sslvision.h"
 #include <limits>

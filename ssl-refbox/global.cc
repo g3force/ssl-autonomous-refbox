@@ -1,3 +1,7 @@
+/**
+ * @file global.cc
+ * @brief Global source file
+ */
 #include "global.h"
 #include "../ConfigFile/ConfigFile.h"
 #include <iostream>

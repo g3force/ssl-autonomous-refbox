@@ -1,3 +1,7 @@
+/**
+ * @file glextra.h
+ * @brief GLExtra header file
+ */
 #ifndef _BSMARTGUI_GL_EXTRA_H_
 #define _BSMARTGUI_GL_EXTRA_H_ 1
 

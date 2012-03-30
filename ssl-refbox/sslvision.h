@@ -1,3 +1,7 @@
+/**
+ * @file sslvision.h
+ * @brief SSLVision header file
+ */
 #ifndef SSLVISION
 #define SSLVISION
 
