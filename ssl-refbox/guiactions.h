@@ -24,5 +24,6 @@ public slots:
     void update_frame(int);
     void slider_action(int);
     void change_show_rules(QString);
+    void showPropertiesDlg();
 private:
 };
