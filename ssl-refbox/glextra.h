@@ -92,6 +92,8 @@ private:
     //robot_models
     Robot_Sample_List robot_models;
 
+    int cur_timestamp;
+
     void draw_robot(int, int, SSLRefbox::Colors::Color, double rotation = 0, int team = -1, int id = -1, bool last_touched = false);
 
     void draw_ball(double, double, double, SSLRefbox::Colors::Color);

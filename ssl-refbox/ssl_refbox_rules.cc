@@ -241,11 +241,11 @@ void SSL_Refbox_Rules::run()
         for ( std::vector<Broken_Rule>::iterator brit =
                     broken_rule_vector.begin(); brit != broken_rule_vector.end(); ) {
             if ( ( cur_timestamp - brit->when_broken ) > 5000 ) {
-                std::ostringstream o;
-                o << cur_timestamp << " - " << brit->when_broken
-                << " rule " << brit->rule_number << " removed";
-                LOG4CXX_DEBUG ( logger, o.str() );
-                broken_rule_vector.erase ( brit );
+//                std::ostringstream o;
+//                o << cur_timestamp << " - " << brit->when_broken
+//                << " rule " << brit->rule_number << " removed";
+//                LOG4CXX_DEBUG ( logger, o.str() );
+//                broken_rule_vector.erase ( brit );
             } else {
                 brit++;
             }
@@ -288,7 +288,7 @@ void SSL_Refbox_Rules::run()
                     last_break = rule;
                     last_msg = cur_frm;
                     std::ostringstream o;
-                    o << cur_frm << " Rule " << rule << " broken by "
+                    o << cur_timestamp << " " << cur_frm << " Rule " << rule << " broken by "
                     << team << " | " << id;
                     LOG4CXX_DEBUG ( logger, o.str() );
                 }
@@ -420,10 +420,10 @@ void SSL_Refbox_Rules::run()
         for ( std::vector<Broken_Rule>::iterator brit =
                     broken_rule_vector.begin(); brit != broken_rule_vector.end(); ++brit ) {
             if ( broken_rule_gui.rule_number == brit->rule_number ) {
-                std::ostringstream o;
-                o << cur_timestamp << " Regel " << broken_rule_gui.rule_number <<
-                " überschrieben";
-                LOG4CXX_DEBUG ( logger, o.str() );
+//                std::ostringstream o;
+//                o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
+//                " overridden";
+//                LOG4CXX_DEBUG ( logger, o.str() );
                 brit->when_broken = broken_rule_gui.when_broken;
                 brit->freekick_pos = broken_rule_gui.freekick_pos;
                 brit->rule_breaker = broken_rule_gui.rule_breaker;
@@ -436,6 +436,12 @@ void SSL_Refbox_Rules::run()
         }
         if ( !broken_rule_modified && broken_rule_gui.rule_number != -42 ) {
             broken_rule_vector.push_back ( broken_rule_gui );
+			std::ostringstream o;
+			o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
+//					" " << GLExtra::rulenames[broken_rule_gui.rule_number - 1] <<
+			" broken";
+			LOG4CXX_DEBUG ( logger, o.str() );
+
         }
         filter_data->set_broken_rules ( broken_rule_vector );
 
