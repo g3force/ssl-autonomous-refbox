@@ -541,10 +541,10 @@ void GLExtra::bglDrawRulesystemData() {
 	int rule_counter = 0;
 	glLineWidth(2);
 
-	for (std::vector<Broken_Rule>::iterator brit = broken_rule_vector.end(); brit != broken_rule_vector.begin();
-			--brit) {
+	for ( std::vector<Broken_Rule>::reverse_iterator brit = broken_rule_vector.rbegin(); brit
+            != broken_rule_vector.rend(); ++brit ) {
 		if ((cur_timestamp - brit->when_broken) > 5000) {
-			continue;
+			break;
 		}
 
 		//rule_breaker (the robot, who broke the rule)
@@ -633,7 +633,7 @@ void GLExtra::bglDrawRulesystemData() {
 		std::string tmp = "";
 
 		std::string string;
-		if (brit->rule_number < 1 || brit->rule_number > 41) {
+		if (brit->rule_number < 1 || brit->rule_number > 42) {
 			string = "unknown";
 			std::ostringstream o;
 			o << "Bad index for rule: " << brit->rule_number << std::endl;
