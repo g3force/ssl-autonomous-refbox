@@ -337,6 +337,7 @@ void SSL_Refbox_Rules::run()
                     broken_rule_gui.line_for_smth = BSmart::Line ( -1., -1., -1.,
                                                     -1. );
                     broken_rule_gui.standing = BSmart::Int_Vector ( -1, -1 );
+                    broken_rule_gui.frame_broken = cur_frm;
 
                     switch ( rule ) {
                         case 1:
@@ -425,10 +426,10 @@ void SSL_Refbox_Rules::run()
 				break;
 			}
             if ( broken_rule_gui.rule_number == brit->rule_number ) {
-                std::ostringstream o;
-                o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
-                " overridden";
-                LOG4CXX_DEBUG ( logger, o.str() );
+//                std::ostringstream o;
+//                o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
+//                " overridden";
+//                LOG4CXX_DEBUG ( logger, o.str() );
                 brit->when_broken = broken_rule_gui.when_broken;
                 brit->freekick_pos = broken_rule_gui.freekick_pos;
                 brit->rule_breaker = broken_rule_gui.rule_breaker;
@@ -443,7 +444,7 @@ void SSL_Refbox_Rules::run()
             broken_rule_vector.push_back ( broken_rule_gui );
 			std::ostringstream o;
 			o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
-			" broken" << "----- " << broken_rule_vector.size();
+			" broken" << "Broken rules: " << broken_rule_vector.size();
 			LOG4CXX_DEBUG ( logger, o.str() );
 			if(broken_rule_gui.rule_number > 0 && broken_rule_gui.rule_number <= 42) {
 				emit new_broken_rule(Global::rulenames[broken_rule_gui.rule_number - 1].c_str());
