@@ -42,8 +42,6 @@ public:
     Q_ALL = Q_I | Q_II | Q_III | Q_IV   //full  circle
     }; /* enum Quadrant */
 
-    static const std::string rulenames[42];
-
     GLExtra();
     GLExtra(Filter_Data*);
     ~GLExtra();

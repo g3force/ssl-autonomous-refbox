@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SWI-Prolog.h>
 #include <libbsmart/field.h>
+#include "global.h"
 
 // log4cxx
 using namespace log4cxx;
@@ -442,9 +443,13 @@ void SSL_Refbox_Rules::run()
             broken_rule_vector.push_back ( broken_rule_gui );
 			std::ostringstream o;
 			o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
-			" broken";
+			" broken" << "----- " << broken_rule_vector.size();
 			LOG4CXX_DEBUG ( logger, o.str() );
-
+			if(broken_rule_gui.rule_number > 0 && broken_rule_gui.rule_number <= 42) {
+				emit new_broken_rule(Global::rulenames[broken_rule_gui.rule_number - 1].c_str());
+			} else {
+				LOG4CXX_WARN ( logger, "Invalid rule number" );
+			}
         }
         filter_data->set_broken_rules ( broken_rule_vector );
 

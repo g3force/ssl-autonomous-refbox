@@ -23,6 +23,7 @@ public:
 
 signals:
     void new_filter_data();
+    void new_broken_rule(QString);
 
 private:
     char* argv_tmp[];

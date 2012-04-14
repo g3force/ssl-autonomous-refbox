@@ -69,6 +69,10 @@ void GuiActions::connectActions() {
 	connect(m_gui->log_frameNumber, SIGNAL ( textChanged() ), this, SLOT ( gotoFrameInTextBox() ));
 	connect(m_gui->gamearea->vision->log_control, SIGNAL ( enable_log_frameNumber( bool ) ), this,
 			SLOT ( setLogFrameNumberEnabled(bool) ));
+
+	// broken rules
+	connect(m_gui->gamearea->rules, SIGNAL ( new_broken_rule( QString ) ), this,
+			SLOT ( insert_into_lst_broken_rules( QString ) ));
 }
 
 void GuiActions::fullscreen(bool f) {
@@ -137,10 +141,10 @@ void GuiActions::change_ball_last_touched(QString text) {
 }
 
 void GuiActions::update_frame(int frame) {
-	//    if(frame % 100 == 0)
-	if (m_gui->gamearea->vision->log_control->get_play_speed() != 0.0) {
-		force_update_frame(frame);
-	}
+		if (m_gui->gamearea->vision->log_control->get_play_speed() != 0.0) {
+			if (frame % ((int)m_gui->gamearea->vision->log_control->get_play_speed()*10) == 0)
+			force_update_frame(frame);
+		}
 }
 
 void GuiActions::force_update_frame(int frame) {
@@ -189,4 +193,8 @@ void GuiActions::log_frame_back() {
 void GuiActions::log_frame_forward() {
 	m_gui->gamearea->vision->log_control->log_frame_forward();
 	force_update_frame(m_gui->gamearea->vision->log_control->get_current_frame());
+}
+
+void GuiActions::insert_into_lst_broken_rules(QString rulename) {
+	m_gui->lst_brokenRules->insertItem(0, rulename);
 }

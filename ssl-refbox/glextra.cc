@@ -11,56 +11,11 @@
 #include <libbsmart/field.h>
 #include <libbsmart/math.h>
 #include "glextra.h"
+#include "global.h"
 
 using namespace log4cxx;
 LoggerPtr GLExtra::logger(Logger::getLogger("GLExtra"));
 
-/**
- * @brief A list of all rule names
- */
-const std::string GLExtra::rulenames[42] = { "Robot Number exceeded", //1
-		"Rule not checked", //2
-		"Goalie changed", //3
-		"Rule not checked", //4
-		"Rule not checked", //5
-		"Rule not checked", //6
-		"Rule not checked", //7
-		"Rule not checked", //8
-		"Rule not checked", //9
-		"Rule not checked", //10
-		"Rule not checked", //11
-		"Rule not checked", //12
-		"scored with chip_kick", //13
-		"Bad Position during kickoff", //14
-		"Bad Position during Freekick", //15
-		"Bad Position during STOPPED", //16
-		"Bad Position during Penalty", //17
-		"Illegal Position in own defense area", //18
-		"Opponent goalie touched", //19
-		"Rule not checked", //20
-		"Bad Position during Freekick", //21
-		"Freekick taken before whistle", //22
-		"Freekick Time exceeded", //23
-		"Halftime exceeded", //24
-		"Rule not checked", //25
-		"Timeout taken", //26
-		"Too many Timeouts taken", //27
-		"Timeout time exceeded", //28
-		"Goal scored", //29
-		"Ball off the field", //30
-		"Ball rolling at freekick", //31
-		"Rule not checked", //32
-		"Rule does not exist", //33
-		"Rule does not exist", //34
-		"Rule does not exist", //35
-		"Rule does not exist", //36
-		"Rule does not exist", //37
-		"Rule does not exist", //38
-		"Rule does not exist", //39
-		"Rule does not exist", //40
-		"Rule does not exist", //41
-		"Offside position" //42
-		};
 
 /**
  * @brief Initialize GLExtra
@@ -639,7 +594,7 @@ void GLExtra::bglDrawRulesystemData() {
 			o << "Bad index for rule: " << brit->rule_number << std::endl;
 			LOG4CXX_WARN(logger, o.str());
 		} else {
-			string = rulenames[brit->rule_number - 1];
+			string = Global::rulenames[brit->rule_number - 1];
 		}
 		if (brit->rule_number == 29) {
 			string += " by ";

@@ -29,5 +29,6 @@ public slots:
     void force_update_frame ( int );
     void log_frame_back();
     void log_frame_forward();
+    void insert_into_lst_broken_rules(QString);
 private:
 };

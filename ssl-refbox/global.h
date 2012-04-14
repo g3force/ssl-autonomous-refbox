@@ -18,6 +18,7 @@ class Global {
 private:
 	static log4cxx::LoggerPtr logger;
 public:
+    static const std::string rulenames[42];
 	static ConfigFile config;
 	static char* logFile;
 	static void loadConfig(string);
