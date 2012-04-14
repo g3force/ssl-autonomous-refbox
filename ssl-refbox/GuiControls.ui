@@ -70,7 +70,7 @@
       <item row="2" column="1">
        <widget class="QPushButton" name="show_rules">
         <property name="text">
-         <string>Show Rules</string>
+         <string>No Rules</string>
         </property>
        </widget>
       </item>
@@ -121,7 +121,7 @@
      <x>0</x>
      <y>0</y>
      <width>972</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Menu">
@@ -307,26 +307,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>frame--</string>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="log_frameNumber">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>90</y>
-       <width>120</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="numDigits">
-      <number>7</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
-     </property>
-     <property name="intValue" stdset="0">
-      <number>0</number>
+      <string>frames--</string>
      </property>
     </widget>
     <widget class="QPushButton" name="log_frame_forward">
@@ -339,7 +320,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>frame++</string>
+      <string>frames++</string>
      </property>
     </widget>
     <widget class="QLCDNumber" name="log_totalFrames">
@@ -362,6 +343,32 @@
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="log_frameNumber">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>90</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QTextEdit::WidgetWidth</enum>
+     </property>
+     <property name="acceptRichText">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>

@@ -24,5 +24,10 @@ public slots:
     void update_frame(int);
     void slider_action(int);
     void change_show_rules(QString);
+    void gotoFrameInTextBox ();
+    void setLogFrameNumberEnabled(bool);
+    void force_update_frame ( int );
+    void log_frame_back();
+    void log_frame_forward();
 private:
 };

@@ -238,6 +238,7 @@ void SSL_Refbox_Rules::run()
         // Load and save GUI-update for broken rules
         broken_rule_vector.clear();
         broken_rule_vector = filter_data->get_broken_rules();
+        // vektor will not be cleared. All ever broken rules are contained in the vektor
 //        for ( std::vector<Broken_Rule>::iterator brit =
 //                    broken_rule_vector.begin(); brit != broken_rule_vector.end(); ) {
 //            if ( ( cur_timestamp - brit->when_broken ) > 5000 ) {

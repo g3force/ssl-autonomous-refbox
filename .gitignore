@@ -16,5 +16,6 @@ ConfigFile/example
 ConfigFile/tester
 *.pb.h
 *.pb.cc
+logs
 
 /doc

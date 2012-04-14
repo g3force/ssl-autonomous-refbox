@@ -103,10 +103,36 @@ int main(int argc, char* argv[]) {
 		Logger::getRootLogger()->setLevel(Level::getInfo());
 	}
 
+
+	// handle arguments
+	string custConfig = "";
+	Global::logFile = NULL;
+	for (int i = 1; i < argc; i++) {
+		if(strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0) {
+			printf("Following options are available:\n");
+			printf("%-20s %s\n", "-h (--help)","Print this help");
+			printf("%-20s %s\n", "-c configfile","Use given config file");
+			printf("%-20s %s\n", "logfile","Immediately start given log file");
+			exit(0);
+		} else if(strcmp(argv[i], "-c") == 0) {
+			if(i + 1>=argc) {
+				fprintf(stderr,"Missing parameter for option -c\n");
+				exit(1);
+			}
+			custConfig = argv[i+1];
+			i++;
+		} else {
+			// load log file
+			Global::logFile = argv[i];
+//			logFile = argv[i];
+//			Global::setLogFile(argv[i]);
+		}
+	}
+
 	LOG4CXX_INFO(logger, "Entering application.");
 
 	// load the config file. Settings are stored publicly
-	Global::loadConfig();
+	Global::loadConfig(custConfig);
 
 	// external variable in ssl_refbox_rules.h for initializing prolog
 	argv_global = argv[0];

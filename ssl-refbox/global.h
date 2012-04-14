@@ -19,6 +19,9 @@ private:
 	static log4cxx::LoggerPtr logger;
 public:
 	static ConfigFile config;
-	static void loadConfig();
+	static char* logFile;
+	static void loadConfig(string);
+	static void setLogFile(string);
+	static string getLogFile();
 };
 #endif
