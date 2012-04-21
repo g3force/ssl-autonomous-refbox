@@ -1,3 +1,7 @@
+/**
+ * @file sslvision.h
+ * @brief SSLVision header file
+ */
 #ifndef SSLVISION
 #define SSLVISION
 
@@ -15,6 +19,9 @@
 #include "log_control.h"
 #include <log4cxx/logger.h>
 
+/**
+ * @brief data store for current data received from SSL-vision/log file
+ */
 struct Transformed_Percept
 {
     int cam_id;
@@ -35,6 +42,11 @@ struct Transformed_Percept
 
 };
 
+/**
+ * @class SSLVision
+ * @brief The SSLVision class receives data from ssl-vision and prepares it.
+ * It also handles log files.
+ */
 class SSLVision : public QThread
 {
     Q_OBJECT

@@ -1,3 +1,8 @@
+/**
+ * @file glextra.cc
+ * @brief GLExtra source file
+ *
+ */
 #include <GL/gl.h>
 #include <iostream>
 #include <GL/glut.h>
@@ -7,6 +12,12 @@
 #include <libbsmart/math.h>
 #include "glextra.h"
 
+using namespace log4cxx;
+LoggerPtr GLExtra::logger ( Logger::getLogger ( "GLExtra" ) );
+
+/**
+ * @brief A list of all rule names
+ */
 const std::string GLExtra::rulenames[42] = { "Robot Number exceeded", //1
         "Rule not checked", //2
         "Goalie changed", //3
@@ -49,13 +60,14 @@ const std::string GLExtra::rulenames[42] = { "Robot Number exceeded", //1
         "Rule does not exist", //40
         "Rule does not exist", //41
         "Offside position" //42
-                                           };
+};
+
 /**
- * @class GLExtra
+ * @brief Initialize GLExtra
  */
 GLExtra::GLExtra()
 {
-    current_ball_percepts.clear();
+	current_ball_percepts.clear();
     ball_samples.clear();
     ball_model = Ball_Sample();
     tmp_perc_robots.clear();
@@ -66,6 +78,10 @@ GLExtra::GLExtra()
     broken_rule_vector.clear();
 }
 
+/**
+ * @brief Initialize GLExtra
+ * @param filter_data_
+ */
 GLExtra::GLExtra ( Filter_Data* filter_data_ )
 {
     filter_data = filter_data_;
@@ -87,7 +103,13 @@ GLExtra::~GLExtra()
     ;
 }
 
-///Plot all symmetric points to given (x,y). \see bglBresCircle
+/**
+ * @brief Plot all symmetric points to given (x,y).
+ * \see bglBresCircle
+ * @param x
+ * @param y
+ * @param q quadrant
+ */
 inline void GLExtra::symmPlotPoints ( const int& x, const int& y,
                                       const Quadrant& q )
 {
@@ -109,6 +131,13 @@ inline void GLExtra::symmPlotPoints ( const int& x, const int& y,
     }
 }
 
+/**
+    * @brief Draw a circle with radius @c r using the Bresenham algorithm
+    * (center is the current position)
+    * @see http://www.cs.fit.edu/~wds/classes/graphics/Rasterize/rasterize/
+    * @param r radius
+    * @param q Enables drawing partial bow of a circle (optional)
+    */
 inline void GLExtra::bglBresCircle ( const int& r, const Quadrant& q )
 {
     int x = 0;
@@ -133,15 +162,24 @@ inline void GLExtra::bglBresCircle ( const int& r, const Quadrant& q )
     glEnd();
 }
 
-///Since glPointSize is not available on all graphic cards
-///we have to use a wrapper
+/**
+ * @brief Wrapper for glPoint
+ * Since glPointSize is not available on all graphic cards
+ * we have to use a wrapper
+ * @param x
+ * @param y
+ * @param sz
+ */
 inline void GLExtra::bglPoint ( const float x, const float y, const float sz )
 {
     const float off = sz * 0.5;
     glRectf ( x - off, y - off, x + off, y + off );
 }
 
-//NOTE keep in sync with field.h
+/**
+ * @brief Draw field lines (border, middle) and call other draw functions
+ * NOTE keep in sync with field.h
+ */
 void GLExtra::bglDrawField()
 {
     //Border + Middle line
@@ -183,7 +221,11 @@ void GLExtra::bglDrawField()
     draw_marks();
 }
 
-//NOTE keep in sync with field.h
+/**
+ * @brief Draw defense area
+ * NOTE keep in sync with field.h
+ * @param offset Offset that is added to defense radius
+ */
 void GLExtra::draw_defense_area ( int offset )
 {
     static const float half_dline = BSmart::Field::defense_line * 0.5;
@@ -200,7 +242,10 @@ void GLExtra::draw_defense_area ( int offset )
     glPopMatrix();
 }
 
-//NOTE keep in sync with field.h
+/**
+ * @brief Draw both goals
+ * NOTE keep in sync with field.h
+ */
 void GLExtra::draw_goal()
 {
     static const int half_goal_width = BSmart::Field::goal_width / 2;
@@ -217,7 +262,10 @@ void GLExtra::draw_goal()
     glPopAttrib();
 }
 
-//NOTE keep in sync with field.h
+/**
+ * @brief Draw marks of field (goal, penalty mark, center mark)
+ * NOTE keep in sync with field.h
+ */
 void GLExtra::draw_marks()
 {
     static const float pt = ( BSmart::Field::half_field_width
@@ -241,7 +289,9 @@ void GLExtra::draw_marks()
     glPopMatrix();
 }
 
-//Draw Filter_Data
+/**
+ * @brief Draw filter data (objects that move like robots, ball)
+ */
 void GLExtra::bglDrawFilterData()
 {
     tmp_perc_robots.clear();
@@ -271,13 +321,17 @@ void GLExtra::bglDrawFilterData()
     //current robot percepts
     for ( Robot_Percept_List::iterator it = current_robot_percepts.begin(); it
             != current_robot_percepts.end(); it++ ) {
-        draw_robot ( it->x, it->y, it->color, -1, -1, false );
+    	double rotation = 0;
+    	if(it->rotation_known) rotation = it->rotation;
+        draw_robot ( it->x, it->y, it->color, rotation, -1, -1, false );
+
     }
 
     //robot samples
     for ( Robot_Sample_List::iterator it = robot_samples.begin(); it
             != robot_samples.end(); it++ ) {
-        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::WHITE, -1, false );
+        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::WHITE, it->pos.rotation, -1, -1, false );
+        LOG4CXX_DEBUG(logger, "Whoohu, there was a sample. Dont know what it is actually and it does not appear in log file play mode...");
     }
 
     //robot models
@@ -287,7 +341,7 @@ void GLExtra::bglDrawFilterData()
             != robot_models.end(); it++ ) {
         last_touched = ( ( it->team == ball_model.last_touched_robot.x )
                          && ( it->id == ball_model.last_touched_robot.y ) );
-        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::RED, it->team,
+        draw_robot ( it->pos.x, it->pos.y, SSLRefbox::Colors::RED, it->pos.rotation, it->team,
                      it->id, last_touched );
         //        draw_robot(it->pos.x, it->pos.y, SSLRefbox::Colors::RED, quadric, it->id, false);
     }
@@ -319,76 +373,65 @@ void GLExtra::bglDrawFilterData()
 
 }
 
-void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
+/**
+ * @brief Draw a robot with given color to given position and mark, if it was last touched robot.
+ * @param x x_position
+ * @param y y_position
+ * @param color SSLRefbox::Colors::Color, also important for team, sample and model
+ * @param team team
+ * @param id robot id
+ * @param last_touched is this the bot that was last touched?
+ */
+void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color, double rotation,
                            int team, int id, bool last_touched )
 {
     glPushMatrix();
     glTranslatef ( x, y, 0. );
 
-    double f = 0.;
 
     switch ( color ) {
         case SSLRefbox::Colors::YELLOW:
             glColor3d ( 1., 1., 0. );
             glBegin ( GL_TRIANGLE_FAN );
             glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
-                             sin ( f ) * BSmart::Field::robot_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         case SSLRefbox::Colors::BLUE:
             glColor3d ( 0., 0., 1. );
             glBegin ( GL_TRIANGLE_FAN );
             glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
-                             sin ( f ) * BSmart::Field::robot_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         case SSLRefbox::Colors::WHITE: //white: sample
             glColor3d ( 1., 1., 1. );
             glBegin ( GL_LINE_STRIP );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
-                             sin ( f ) * BSmart::Field::robot_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
+            if(rotation != 0) glVertex3d ( 0., 0., 0. );
             break;
 
         case SSLRefbox::Colors::RED: //red: model
             glColor3d ( 1., 0., 0. );
             glBegin ( GL_LINE_STRIP );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
-                             sin ( f ) * BSmart::Field::robot_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
+            if(rotation != 0) glVertex3d ( 0., 0., 0. );
             break;
 
         default: //black: default, should not happen
-            std::cout << "unknown robot at (" << x << "|" << y << ") color: "
+        	std::ostringstream o;
+            o << "unknown robot at (" << x << "|" << y << ") color: "
                       << color << std::endl;
+        	LOG4CXX_WARN(logger, o.str());
             glColor3d ( 0., 0., 0. );
             glBegin ( GL_TRIANGLE_FAN );
-            glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
-                             sin ( f ) * BSmart::Field::robot_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
-
     }
 
+    double f = rotation;
+    for ( int i = 0; i <= 12; ++i ) {
+        glVertex3d ( cos ( f ) * BSmart::Field::robot_radius,
+                     sin ( f ) * BSmart::Field::robot_radius, 0 );
+        f = f + ( 2 * BSmart::pi / 12 );
+    }
+    glEnd();
+
+    // mark robot that last touched ball with a grey square
     if ( last_touched ) {
         glColor3d ( 0.6, 0.6, 0.6 );//grey
         glBegin ( GL_QUADS ); // Draw a square
@@ -405,7 +448,8 @@ void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
 
     glPopMatrix();
 
-    if ( id != -1 ) { //print the number
+    //print the number
+    if ( id != -1 ) {
         std::string string = "";
         int len = int_to_string ( string, id );
 
@@ -415,89 +459,77 @@ void GLExtra::draw_robot ( int x, int y, SSLRefbox::Colors::Color color,
         } else if ( team == 0 ) {
             glColor3d ( 0., 0., 0. );//black
         }
-        glRasterPos2f ( x, y );
+        int bitmapWidth = glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, '0') * len;
+        // center number in robot
+        glRasterPos2f ( x - (BSmart::Field::robot_radius - bitmapWidth)/2, y - 55 );
         for ( int j = 0; j < len; j++ ) {
-            glutBitmapCharacter ( GLUT_BITMAP_TIMES_ROMAN_24, string[j] );
+            glutBitmapCharacter ( GLUT_BITMAP_HELVETICA_18, string[j] );
         }
         glPopMatrix();
     }
 
 }
 
+/**
+ * @brief Draw ball onto surface with given position and color
+ * Color can be one of ORANGE (Percepts), WHITE (Filter Samples), MAGENTA (Ball shadow) or RED (Filter Model)
+ * @param x
+ * @param y
+ * @param z
+ * @param color
+ */
 void GLExtra::draw_ball ( double x, double y, double z,
                           SSLRefbox::Colors::Color color )
 {
     glPushMatrix();
     glTranslatef ( x, y, z + BSmart::Field::ball_radius );
 
-    double f = 0.;
-
+    // handle color
     switch ( color ) {
         case SSLRefbox::Colors::ORANGE: // Percepts
             glColor3d ( 0.96875, 0.55078125, 0.09765625 );
-            glBegin ( GL_TRIANGLE_FAN );
-            glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
-                             sin ( f ) * BSmart::Field::ball_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         case SSLRefbox::Colors::WHITE: // Filter Samples
             glColor3d ( 1., 1., 1. );
-            glBegin ( GL_TRIANGLE_FAN );
-            glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
-                             sin ( f ) * BSmart::Field::ball_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         case SSLRefbox::Colors::MAGENTA: // Ball shadow
             glColor3d ( 1., 0.250980392, 1. );
-            glBegin ( GL_TRIANGLE_FAN );
-            glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
-                             sin ( f ) * BSmart::Field::ball_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         case SSLRefbox::Colors::RED: // Filter Model
             glColor3d ( 1., 0., 0. );
-            glBegin ( GL_TRIANGLE_FAN );
-            glVertex3d ( 0., 0., 0. );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
-                             sin ( f ) * BSmart::Field::ball_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
             break;
 
         default: //default, should not happen
-            std::cout << "unknown ball at (" << x << "|" << y << ") color: "
+        	std::ostringstream o;
+            o << "unknown ball at (" << x << "|" << y << ") color: "
                       << color << std::endl;
+        	LOG4CXX_WARN(logger, o.str());
             glColor3d ( 0., 0., 0. );//black, default
-            glBegin ( GL_LINE_STRIP );
-            for ( int i = 0; i <= 12; ++i ) {
-                glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
-                             sin ( f ) * BSmart::Field::ball_radius, 0 );
-                f = f + ( 2 * BSmart::pi / 12 );
-            }
-            glEnd();
     }
 
-    glPopMatrix();
+    glBegin ( GL_TRIANGLE_FAN );
+    glVertex3d ( 0., 0., 0. );
+    double f = 0.;
+    for ( int i = 0; i <= 12; ++i ) {
+        glVertex3d ( cos ( f ) * BSmart::Field::ball_radius,
+                     sin ( f ) * BSmart::Field::ball_radius, 0 );
+        f = f + ( 2 * BSmart::pi / 12 );
+    }
+    glEnd();
 
+    glPopMatrix();
 }
 
+/**
+ * @brief Convert i into a string and store it in given string object.
+ * Additionally returns the length of the number.
+ * @param string string object to store the resulting string
+ * @param i number to be converted
+ * @return length of given number
+ */
 int GLExtra::int_to_string ( std::string& string, int i )
 {
     int len = 0;
@@ -525,6 +557,19 @@ int GLExtra::int_to_string ( std::string& string, int i )
     return len;
 }
 
+/**
+ * Draw the following parts of GUI:
+ * <ul>
+ * <li>rule_breaker (the robot, who broke the rule)</li>
+ * <li>freekick position</li>
+ * <li>circle around ball</li>
+ * <li>defense area</li>
+ * <li>line for smth (something?!)</li>
+ * <li>string output for rules</li>
+ * <li>Play_States</li>
+ * </ul>
+ *
+ */
 void GLExtra::bglDrawRulesystemData()
 {
     broken_rule_vector.clear();
@@ -535,7 +580,7 @@ void GLExtra::bglDrawRulesystemData()
 
     for ( std::vector<Broken_Rule>::iterator brit = broken_rule_vector.begin(); brit
             != broken_rule_vector.end(); ++brit ) {
-        //rule_breaker
+        //rule_breaker (the robot, who broke the rule)
         for ( Robot_Sample_List::iterator it = robot_models.begin(); it
                 != robot_models.end(); it++ ) {
             if ( ( it->team == brit->rule_breaker.x ) && ( it->id
@@ -601,7 +646,7 @@ void GLExtra::bglDrawRulesystemData()
             glPopMatrix();
         }
 
-        //line for smth
+        //line for smth (something?!)
         if ( brit->line_for_smth.p1.x != -1 ) {
             glPushMatrix();
             glLineWidth ( 3 );

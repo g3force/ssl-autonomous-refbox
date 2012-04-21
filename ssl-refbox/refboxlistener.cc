@@ -1,3 +1,7 @@
+/**
+ * @file refboxlistener.cc
+ * @brief RefboxListener source file
+ */
 #include "refboxlistener.h"
 #include <libbsmart/referee_percept.h>
 #include "commands.h"
@@ -8,6 +12,11 @@
 using namespace log4cxx;
 LoggerPtr RefboxListener::logger ( Logger::getLogger ( "RefboxListener" ) );
 
+/**
+ * @brief Initialize RefboxListener
+ * Get IP and port from config file, open socket, init vars
+ * @param gamestate_ BSmart::Game_States
+ */
 RefboxListener::RefboxListener ( BSmart::Game_States* gamestate_ ) :
         gamestate ( gamestate_ )
 {
@@ -45,6 +54,9 @@ RefboxListener::~RefboxListener()
 {
 }
 
+/**
+ * @brief Start listing for refbox commands in endless loop
+ */
 void RefboxListener::run()
 {
     LOG4CXX_DEBUG ( logger, "run()" );
@@ -54,6 +66,9 @@ void RefboxListener::run()
     }
 }
 
+/**
+ * @brief Try reading refbox command from socket and execute it
+ */
 void RefboxListener::execute()
 {
     ssize_t r_result ( 0 );
@@ -101,6 +116,10 @@ void RefboxListener::execute()
 
 }
 
+/**
+ * @brief send refbox command comd to gamestate and input_serial
+ * @param comd
+ */
 void RefboxListener::new_refbox_cmd ( char comd )
 {
     if ( comd != gsp_last.cmd ) {
@@ -110,6 +129,10 @@ void RefboxListener::new_refbox_cmd ( char comd )
     }
 }
 
+/**
+ * @brief Map a cmd from serial to a Referee_Percept command
+ * @param cmd command from commands.h
+ */
 void RefboxListener::input_serial ( const char cmd )
 {
     std::ostringstream o;
@@ -212,6 +235,11 @@ void RefboxListener::input_serial ( const char cmd )
 
 }
 
+/**
+ * @brief Handle signals from referee
+ * Depending on the referee_signal, actions will be performed
+ * @param referee_signal Referee_Percept
+ */
 void RefboxListener::update_game_state ( const int referee_signal )
 {
     switch ( referee_signal ) {
