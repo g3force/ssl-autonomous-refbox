@@ -33,7 +33,8 @@ HEADERS += glextra.h \
  ../proto/messages_robocup_ssl_refbox_log.pb.h \
  ../proto/messages_robocup_ssl_wrapper.pb.h \
  ../ConfigFile/ConfigFile.h
-FORMS += GuiControls.ui
+FORMS += GuiControls.ui \
+GuiPropertiesDlg.ui
 SOURCES += glextra.cc \
  gamearea.cc \
  guiactions.cc \

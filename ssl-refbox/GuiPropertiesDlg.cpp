@@ -1,12 +1,6 @@
 #include "GuiPropertiesDlg.h"
 #include "ui_GuiPropertiesDlg.h"
 
-#include "global.h"
-
-#include <string>
-
-using std::string;
-
 GuiPropertiesDlg::GuiPropertiesDlg(QWidget *parent)
     : QDialog(parent)
 {
@@ -41,4 +35,16 @@ void GuiPropertiesDlg::configUpdate() {
 	Global::saveConfig();
 
 	this->close();
+}
+
+bool GuiPropertiesDlg::isIpAddress(string ip) {
+//	static const regex e("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}");
+//	return regex_match(s, e);
+	return flase;
+}
+
+bool GuiPropertiesDlg::isPort(string port) {
+	//if( char_is_integer() )
+
+	return false;
 }
