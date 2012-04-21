@@ -1,10 +1,12 @@
 #include <QObject>
 namespace Ui { class GuiControls; }
+namespace Ui { class GuiPropertiesDlgClass; }
 
 class GuiActions : public QObject
 {
 Q_OBJECT
 Ui::GuiControls* m_gui;
+Ui::GuiPropertiesDlgClass* prop_gui;
 public:
     GuiActions(Ui::GuiControls*, QObject* = 0);
     ~GuiActions();
