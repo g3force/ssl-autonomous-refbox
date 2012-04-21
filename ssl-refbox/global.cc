@@ -50,3 +50,26 @@ void Global::loadConfig()
         }
     }
 }
+
+void Global::saveConfig() {
+    string configFile = "ssl-autonomous-refbox.conf";
+    string home = getenv ( "HOME" );
+    if ( home.empty() ) {
+        home = "/root";
+    }
+    string configPath[] = {configFile,
+                           home + "/.ssl-autonomous-refbox/" + configFile,
+                           "/etc/" + configFile
+                          };
+
+    for ( int i=0; i<3; i++ ) {
+        std::ofstream out ( configPath[i].c_str() );
+        if ( out ) {
+            out << Global::config;
+            LOG4CXX_INFO ( logger42, "ConfigFile " + configPath[i] + " found and saved." );
+            break;
+        } else {
+            LOG4CXX_DEBUG ( logger42, "ConfigFile " + configPath[i] + " not saved." );
+        }
+    }
+}
