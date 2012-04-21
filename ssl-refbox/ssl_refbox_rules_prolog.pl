@@ -694,12 +694,12 @@ set_freekick_pos_throw_in :-
 throw_in_above(Pos_x,Pos_y) :- 
 	field('field',_,Field_height,_,_,_,_,_,_) , 
 	Pos_y > Field_height/2 , 
-	Pos_y_new is (Field_height/2)-100 , 
+	Pos_y_new is (Field_height/2)-ThrowIn , 
 	set_freekick_pos(Pos_x,Pos_y_new,0).
 throw_in_below(Pos_x,Pos_y) :- 
 	field('field',_,Field_height,_,_,_,_,_,_) , 
 	Pos_y < -(Field_height/2) , 
-	Pos_y_new is -((Field_height/2)-100) , 
+	Pos_y_new is -((Field_height/2)-ThrowIn) , 
 	set_freekick_pos(Pos_x,Pos_y_new,0).
 set_freekick_pos_goal_out :- 
 	ball_location('ball',Pos_x,Pos_y,_,_,_,_) , 
@@ -714,8 +714,8 @@ goal_out_left(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x < -(Field_width/2) , 
 	(Last_touched_team =:= Left_team) , 
 	Pos_y > 0 , 
-	Pos_x_new is -(Field_width/2)+100, 
-	Pos_y_new is (Field_height/2)-100 , 
+	Pos_x_new is -(Field_width/2)+CornerKick, 
+	Pos_y_new is (Field_height/2)-CornerKick , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %corner left below
 goal_out_left(Pos_x,Pos_y,Last_touched_team) :- 
@@ -724,8 +724,8 @@ goal_out_left(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x < -(Field_width/2) , 
 	(Last_touched_team =:= Left_team) , 
 	Pos_y < 0 , 
-	Pos_x_new is -(Field_width/2)+100, 
-	Pos_y_new is -(Field_height/2)+100 , 
+	Pos_x_new is -(Field_width/2)+CornerKick, 
+	Pos_y_new is -(Field_height/2)+CornerKick , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %goal kick left above
 goal_out_left(Pos_x,Pos_y,Last_touched_team) :- 
@@ -734,8 +734,8 @@ goal_out_left(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x < -(Field_width/2) , 
 	(Last_touched_team =\= Left_team) , 
 	Pos_y > 0 , 
-	Pos_x_new is -(Field_width/2)+500, 
-	Pos_y_new is (Field_height/2)-100 , 
+	Pos_x_new is -(Field_width/2)+GoalKickFromLine, 
+	Pos_y_new is (Field_height/2)-GoalKickFromTouch , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %goal kick left below
 goal_out_left(Pos_x,Pos_y,Last_touched_team) :- 
@@ -744,8 +744,8 @@ goal_out_left(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x < -(Field_width/2) , 
 	(Last_touched_team =\= Left_team) , 
 	Pos_y < 0 , 
-	Pos_x_new is -(Field_width/2)+500, 
-	Pos_y_new is -(Field_height/2)+100 , 
+	Pos_x_new is -(Field_width/2)+GoalKickFromLine, 
+	Pos_y_new is -(Field_height/2)+GoalKickFromTouch , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %corner right above
 goal_out_right(Pos_x,Pos_y,Last_touched_team) :- 
@@ -754,8 +754,8 @@ goal_out_right(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x > (Field_width/2) , 
 	(Last_touched_team =\= Left_team) , 
 	Pos_y > 0 , 
-	Pos_x_new is (Field_width/2)-100, 
-	Pos_y_new is (Field_height/2)-100 , 
+	Pos_x_new is (Field_width/2)-CornerKick, 
+	Pos_y_new is (Field_height/2)-CornerKick , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %corner kick right below
 goal_out_right(Pos_x,Pos_y,Last_touched_team) :- 
@@ -764,8 +764,8 @@ goal_out_right(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x > (Field_width/2) , 
 	(Last_touched_team =\= Left_team) , 
 	Pos_y < 0 , 
-	Pos_x_new is (Field_width/2)-100, 
-	Pos_y_new is -(Field_height/2)+100 , 
+	Pos_x_new is (Field_width/2)-CornerKick, 
+	Pos_y_new is -(Field_height/2)+CornerKick , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %goal kick right above
 goal_out_right(Pos_x,Pos_y,Last_touched_team) :- 
@@ -774,8 +774,8 @@ goal_out_right(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x > (Field_width/2) , 
 	(Last_touched_team =:= Left_team) , 
 	Pos_y > 0 , 
-	Pos_x_new is (Field_width/2)-500, 
-	Pos_y_new is (Field_height/2)-100 , 
+	Pos_x_new is (Field_width/2)-GoalKickFromLine, 
+	Pos_y_new is (Field_height/2)-GoalKickFromTouch , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 %goal kick right below
 goal_out_right(Pos_x,Pos_y,Last_touched_team) :- 
@@ -784,8 +784,8 @@ goal_out_right(Pos_x,Pos_y,Last_touched_team) :-
 	Pos_x > (Field_width/2) , 
 	(Last_touched_team =:= Left_team) , 
 	Pos_y < 0 , 
-	Pos_x_new is (Field_width/2)-500, 
-	Pos_y_new is -(Field_height/2)+100 , 
+	Pos_x_new is (Field_width/2)-GoalKickFromLine, 
+	Pos_y_new is -(Field_height/2)+GoalKickFromTouch , 
 	set_freekick_pos(Pos_x_new,Pos_y_new,0).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -834,7 +834,7 @@ rule_fifteen_distance_to_ball :-
 	freekick_blue , 
 	ball_location('ball',Pos_x_ball,Pos_y_ball,_,_,_,_) , 
 	distance(Pos_x_bot,Pos_y_bot,Pos_x_ball,Pos_y_ball,Dist) , 
-	Dist < 500 , 
+	Dist < FreeKickOtherRob , 
 	set_rule_breaker(Team,ID).
 rule_fifteen_distance_to_ball :- 
 	roboter(Team,ID,Pos_x_bot,Pos_y_bot,_,_,1) , 
@@ -842,7 +842,7 @@ rule_fifteen_distance_to_ball :-
 	freekick_yellow , 
 	ball_location('ball',Pos_x_ball,Pos_y_ball,_,_,_,_) , 
 	distance(Pos_x_bot,Pos_y_bot,Pos_x_ball,Pos_y_ball,Dist) , 
-	Dist < 500 , 
+	Dist < FreeKickOtherRob , 
 	set_rule_breaker(Team,ID).
 rule_fifteen_distance_to_opp_defence_area :- 
 	roboter(Team,ID,Pos_x,Pos_y,_,_,1) ,
@@ -982,7 +982,7 @@ rule_seventeen_positions :-
 %Blau aufs linke Tor
 penalty_blue_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	goalie('left_goalie',0,Goalie_id) , 
 	roboter(0,Other_id,Pos_x_other,_,_,_,1) , 
 	Goalie_id =\= Other_id , 
@@ -990,12 +990,12 @@ penalty_blue_on_left_goal :-
 	set_rule_breaker(0,Other_id).
 penalty_blue_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	not((roboter(1,_,Pos_x_kicker,_,_,_,1) , Pos_x_kicker < Min_dist)) , 
 	set_rule_breaker(1,12).
 penalty_blue_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	roboter(1,Kicker_id,Pos_x_kicker,_,_,_,1) , 
 	roboter(1,Other_id,Pos_x_other,_,_,_,1) , 
 	Kicker_id =\= Other_id , 
@@ -1007,7 +1007,7 @@ penalty_blue_on_left_goal :-
 %Gelb aufs linke Tor
 penalty_yellow_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	goalie('left_goalie',1,Goalie_id) , 
 	roboter(1,Other_id,Pos_x_other,_,_,_,1) , 
 	Goalie_id =\= Other_id , 
@@ -1015,12 +1015,12 @@ penalty_yellow_on_left_goal :-
 	set_rule_breaker(1,Other_id).
 penalty_yellow_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	not((roboter(0,_,Pos_x_kicker,_,_,_,1) , Pos_x_kicker < Min_dist)) , 
 	set_rule_breaker(0,12).
 penalty_yellow_on_left_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is ((-(Field_width))+Penalty_mark+400) , 
+	Min_dist is ((-(Field_width))+Penalty_mark+PenaltyKickOtherRob) , 
 	roboter(0,Kicker_id,Pos_x_kicker,_,_,_,1) , 
 	roboter(0,Other_id,Pos_x_other,_,_,_,1) , 
 	Kicker_id =\= Other_id , 
@@ -1032,7 +1032,7 @@ penalty_yellow_on_left_goal :-
 %Blau aufs rechte Tor
 penalty_blue_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	goalie('right_goalie',0,Goalie_id) , 
 	roboter(0,Other_id,Pos_x_other,_,_,_,1) , 
 	Goalie_id =\= Other_id , 
@@ -1040,13 +1040,13 @@ penalty_blue_on_right_goal :-
 	set_rule_breaker(0,Other_id).
 penalty_blue_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	not((roboter(1,_,Pos_x_kicker,_,_,_,1) , 
 	Pos_x_kicker > Min_dist)) , 
 	set_rule_breaker(1,12).
 penalty_blue_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	roboter(1,Kicker_id,Pos_x_kicker,_,_,_,1) , 
 	roboter(1,Other_id,Pos_x_other,_,_,_,1) , 
 	Kicker_id =\= Other_id , 
@@ -1058,7 +1058,7 @@ penalty_blue_on_right_goal :-
 %Gelb aufs rechte Tor
 penalty_yellow_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	goalie('right_goalie',1,Goalie_id) , 
 	roboter(1,Other_id,Pos_x_other,_,_,_,1) , 
 	Goalie_id =\= Other_id , 
@@ -1066,13 +1066,13 @@ penalty_yellow_on_right_goal :-
 	set_rule_breaker(1,Other_id).
 penalty_yellow_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	not((roboter(0,_,Pos_x_kicker,_,_,_,1) , 
 	Pos_x_kicker > Min_dist)) , 
 	set_rule_breaker(0,12).
 penalty_yellow_on_right_goal :- 
 	field('field',Field_width,_,_,_,_,_,_,Penalty_mark) , 
-	Min_dist is (Field_width-Penalty_mark-400) , 
+	Min_dist is (Field_width-Penalty_mark-PenaltyKickOtherRob) , 
 	roboter(0,Kicker_id,Pos_x_kicker,_,_,_,1) , 
 	roboter(0,Other_id,Pos_x_other,_,_,_,1) , 
 	Kicker_id =\= Other_id , 
@@ -1177,7 +1177,8 @@ rule_nineteen :-
 	distance_to_left_def_area(Pos_x2,Pos_y2,Dist1) , 
 	Dist1 < 0 , 
 	distance(Pos_x1,Pos_y1,Pos_x2,Pos_y2,Dist2) , 
-	Dist2 < 200 , set_rule_breaker(Team2,Id2) ,
+	Dist2 < 200 , 
+	set_rule_breaker(Team2,Id2) ,
 	Freekick_x is (Pos_x2 + ((Pos_x1-Pos_x2)/2)) , 
 	Freekick_y is (Pos_y2 + ((Pos_y1-Pos_y2)/2)) , 
 	set_freekick_pos(Freekick_x,Freekick_y,0) , 
@@ -1192,7 +1193,8 @@ rule_nineteen :-
 	distance_to_right_def_area(Pos_x2,Pos_y2,Dist1) , 
 	Dist1 < 0 , 
 	distance(Pos_x1,Pos_y1,Pos_x2,Pos_y2,Dist2) , 
-	Dist2 < 200 , set_rule_breaker(Team2,Id2) , 
+	Dist2 < 200 , 
+	set_rule_breaker(Team2,Id2) , 
 	Freekick_x is (Pos_x2 + ((Pos_x1-Pos_x2)/2)) , 
 	Freekick_y is (Pos_y2 + ((Pos_y1-Pos_y2)/2)) , 
 	set_freekick_pos(Freekick_x,Freekick_y,0) , 
