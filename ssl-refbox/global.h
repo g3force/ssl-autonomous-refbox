@@ -17,7 +17,9 @@ using namespace std;
 class Global {
 private:
 	static log4cxx::LoggerPtr logger;
-//	static string configPath[];
+	static string getConfigPath();
+	static void createDefaultConfigFile(string path);
+
 public:
 	static ConfigFile config;
 	static void loadConfig();
