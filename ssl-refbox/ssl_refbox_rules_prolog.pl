@@ -412,8 +412,8 @@ rule_nineteen :- get_local_play_state(2) , goalie('right_goalie',Team1,Id1) , ro
 rule_twentytwo :- get_local_play_state(PS) , ( (PS =:= 7) ; (PS =:= 8) ; (PS =:= 13) ; (PS =:= 14) ) , ball_status('ball',Ltt,Ltid,_,Touch) , Touch > 0 , set_local_play_state(1) , set_local_next_play_state(PS), set_rule_breaker(Ltt,Ltid).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Regel1: Es sind nur max 5 Roboter pro Team erlaubt									%%
-%% coresspond to law 2: The Number of Robots										%%
+%% Regel1: Es sind nur max 6 Roboter pro Team erlaubt									%%
+%% coresspond to law 3: The Number of Robots										%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rule_one :- rule_one(0) ; rule_one(1).
 rule_one(Team) :- roboter(Team,ID1,_,_,_,_,1) , 
@@ -422,6 +422,7 @@ rule_one(Team) :- roboter(Team,ID1,_,_,_,_,1) ,
                   roboter(Team,ID4,_,_,_,_,1) , ID1 =\= ID4 , ID2 =\= ID4 , ID3 =\= ID4 ,
                   roboter(Team,ID5,_,_,_,_,1) , ID1 =\= ID5 , ID2 =\= ID5 , ID3 =\= ID5 , ID4 =\= ID5 ,
                   roboter(Team,ID6,_,_,_,_,1) , ID1 =\= ID6 , ID2 =\= ID6 , ID3 =\= ID6 , ID4 =\= ID6 , ID5 =\= ID6 ,
+                  roboter(Team,ID7,_,_,_,_,1) , ID1 =\= ID7 , ID2 =\= ID7 , ID3 =\= ID7 , ID4 =\= ID7 , ID5 =\= ID7 , ID6 =\= ID7 ,
                   set_rule_breaker(Team,ID6).
                   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
