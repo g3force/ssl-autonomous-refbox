@@ -8,107 +8,302 @@
 
 %Position, e.g. for saving freekick position
 :- dynamic position/4.
-set_freekick_pos(Pos_x,Pos_y,Pos_z) :- not(position('freekick_pos',_,_,_)) , assert(position('freekick_pos',Pos_x,Pos_y,Pos_z)) , !.
-set_freekick_pos(Pos_x,Pos_y,Pos_z) :- retract(position('freekick_pos',_,_,_)) , assert(position('freekick_pos',Pos_x,Pos_y,Pos_z)).
-get_freekick_pos(Pos_x,Pos_y,Pos_z) :- position('freekick_pos',Pos_x,Pos_y,Pos_z).
+set_freekick_pos(Pos_x,Pos_y,Pos_z) :- 
+	not(position('freekick_pos',_,_,_)) , 
+	assert(position('freekick_pos',Pos_x,Pos_y,Pos_z)) , 
+	!.
+set_freekick_pos(Pos_x,Pos_y,Pos_z) :- 
+	retract(position('freekick_pos',_,_,_)) , 
+	assert(position('freekick_pos',Pos_x,Pos_y,Pos_z)).
+get_freekick_pos(Pos_x,Pos_y,Pos_z) :- 
+	position('freekick_pos',Pos_x,Pos_y,Pos_z).
 
 %Field
 :- dynamic field/9.
-define_field(Field_width,Field_height,Goal_width,Goal_Depth,Goal_Height,Defense_radius,Defense_line,Penalty_mark) :- not(field('field',_,_,_,_,_,_,_,_)) , assert(field('field',Field_width,Field_height,Goal_width,Goal_Depth,Goal_Height,Defense_radius,Defense_line,Penalty_mark)).
+define_field(Field_width,Field_height,Goal_width,Goal_Depth,Goal_Height,Defense_radius,Defense_line,Penalty_mark) :- 
+	not(field('field',_,_,_,_,_,_,_,_)) , 
+	assert(field('field',Field_width,Field_height,Goal_width,Goal_Depth,Goal_Height,Defense_radius,Defense_line,Penalty_mark)).
 
 %Ball
-set_ball_stuff(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z,Last_touched_team,Last_touched_id,Status) :- set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) , set_ball_status(Last_touched_team,Last_touched_id,Status).
+set_ball_stuff(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z,Last_touched_team,Last_touched_id,Status) :- 
+	set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) , 
+	set_ball_status(Last_touched_team,Last_touched_id,Status).
 
 %Ballvariable
 :- dynamic ball_location/7.
-set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) :- not(ball_location('ball',_,_,_,_,_,_))     , assert(ball_location('ball',Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z)) , !.
-set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) :- retract(ball_location('ball',_,_,_,_,_,_)) , assert(ball_location('ball',Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z)).
+set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) :- 
+	not(ball_location('ball',_,_,_,_,_,_))     , 
+	assert(ball_location('ball',Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z)) , 
+	!.
+set_ball_location(Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z) :- 
+	retract(ball_location('ball',_,_,_,_,_,_)) , 
+	assert(ball_location('ball',Pos_x,Pos_y,Pos_z,Speed_x,Speed_y,Speed_z)).
 
 %Ball status
 :- dynamic ball_status/5.
 %Variable für Abseits
 :- dynamic check_offside/1.
 %Neuer Last_touched, Status += 1
-set_ball_status(Ltt_1,Ltid_1,Status) :- ball_status('ball',Ltt_2,Ltid_2,_,X) , not((Ltt_1 =:= Ltt_2 , Ltid_1 =:= Ltid_2)) , Y is X+1 , retract(ball_status('ball',_,_,_,_)) , assert(ball_status('ball',Ltt_1,Ltid_1,Status,Y)) , retract(check_offside(_)) , assert(check_offside(1)).
+set_ball_status(Ltt_1,Ltid_1,Status) :- 
+	ball_status('ball',Ltt_2,Ltid_2,_,X) , 
+	not((Ltt_1 =:= Ltt_2 , Ltid_1 =:= Ltid_2)) , 
+	Y is X+1 , 
+	retract(ball_status('ball',_,_,_,_)) , 
+	assert(ball_status('ball',Ltt_1,Ltid_1,Status,Y)) , 
+	retract(check_offside(_)) , 
+	assert(check_offside(1)).
 %Nur neuer Status
-set_ball_status(Ltt,Ltid,Status_1) :- ball_status('ball',_,_,Status_2,X) , Status_1 =\= Status_2 , retract(ball_status('ball',_,_,_,_)) , assert(ball_status('ball',Ltt,Ltid,Status_1,X)) , retract(check_offside(_)) , assert(check_offside(1)).
+set_ball_status(Ltt,Ltid,Status_1) :- 
+	ball_status('ball',_,_,Status_2,X) , 
+	Status_1 =\= Status_2 , 
+	retract(ball_status('ball',_,_,_,_)) , 
+	assert(ball_status('ball',Ltt,Ltid,Status_1,X)) , 
+	retract(check_offside(_)) , 
+	assert(check_offside(1)).
 %Nur den Touch setzen, bei neuen Play_states
-set_ball_status_touch(Touch) :- not(ball_status('ball',_,_,_,_)) , assert(ball_status('ball',-3,-3,-3,Touch)) , !.
-set_ball_status_touch(Touch) :- retract(ball_status('ball',Team,ID,Status,_)) , assert(ball_status('ball',Team,ID,Status,Touch)).
-set_touch(New) :- ((New =:= 6) ; (New =:= 12)) , set_ball_status_touch(-1) , !.
-set_touch(New) :- New =\= 6 , New =\= 12 , set_ball_status_touch(0).
-reset_touch :- play_state('local_play_state',Next) , set_touch(Next) , !.
-get_ball_status(Ltt,Ltid,Status,Touch) :- ball_status('ball',Ltt,Ltid,Status,Touch).
+set_ball_status_touch(Touch) :- 
+	not(ball_status('ball',_,_,_,_)) , 
+	assert(ball_status('ball',-3,-3,-3,Touch)) , 
+	!.
+set_ball_status_touch(Touch) :- 
+	retract(ball_status('ball',Team,ID,Status,_)) , 
+	assert(ball_status('ball',Team,ID,Status,Touch)).
+set_touch(New) :- 
+	((New =:= 6) ; (New =:= 12)) , 
+	set_ball_status_touch(-1) , 
+	!.
+set_touch(New) :- 
+	New =\= 6 , 
+	New =\= 12 , 
+	set_ball_status_touch(0).
+reset_touch :- 
+	play_state('local_play_state',Next) , 
+	set_touch(Next) , 
+	!.
+get_ball_status(Ltt,Ltid,Status,Touch) :- 
+	ball_status('ball',Ltt,Ltid,Status,Touch).
 
 %Robotervariable
 :- dynamic roboter/7.
-set_robot(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible) :- not(roboter(Team,ID,_,_,_,_,_))    , assert(roboter(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible)) , !.
-set_robot(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible) :- retract(roboter(Team,ID,_,_,_,_,_)), assert(roboter(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible)).
+set_robot(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible) :- 
+	not(roboter(Team,ID,_,_,_,_,_))    , 
+	assert(roboter(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible)) , 
+	!.
+set_robot(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible) :- 
+	retract(roboter(Team,ID,_,_,_,_,_)), 
+	assert(roboter(Team,ID,Pos_x,Pos_y,Speed_x,Speed_y,Visible)).
 
 %Roboter who breaks the rule
 :- dynamic rule_breaker/3.
-set_rule_breaker(Team,ID) :- not(rule_breaker('rule_breaker',_,_))     , assert(rule_breaker('rule_breaker',Team,ID)) , !.
-set_rule_breaker(Team,ID) :- retract(rule_breaker('rule_breaker',_,_)) , assert(rule_breaker('rule_breaker',Team,ID)).
-get_rule_breaker(Team,ID) :- rule_breaker('rule_breaker',Team,ID).
+set_rule_breaker(Team,ID) :- 
+	not(rule_breaker('rule_breaker',_,_))     , 
+	assert(rule_breaker('rule_breaker',Team,ID)) , 
+	!.
+set_rule_breaker(Team,ID) :- 
+	retract(rule_breaker('rule_breaker',_,_)) , 
+	assert(rule_breaker('rule_breaker',Team,ID)).
+get_rule_breaker(Team,ID) :- 
+	rule_breaker('rule_breaker',Team,ID).
 
 %timestamp
 :- dynamic timestamp/2.
 %aktueller Timestamp gesetzt von außen
-set_timestamp(Timestamp) :- not(timestamp('timestamp',_)) , assert(timestamp('timestamp',Timestamp)) , !.
-set_timestamp(Timestamp) :- retract(timestamp('timestamp',_)) , assert(timestamp('timestamp',Timestamp)).
-get_timestamp(Timestamp) :- timestamp('timestamp',Timestamp).
+set_timestamp(Timestamp) :- 
+	not(timestamp('timestamp',_)) , 
+	assert(timestamp('timestamp',Timestamp)) , 
+	!.
+set_timestamp(Timestamp) :- 
+	retract(timestamp('timestamp',_)) , 
+	assert(timestamp('timestamp',Timestamp)).
+get_timestamp(Timestamp) :- 
+	timestamp('timestamp',Timestamp).
 %drei Sekunden zwischen Ansage des "before"-Spielstandes und Start
-set_three_seconds :- timestamp('timestamp',Timestamp) , not(timestamp('three_seconds',_)) , assert(timestamp('three_seconds',Timestamp)) , !.
-set_three_seconds :- timestamp('timestamp',Timestamp) , retract(timestamp('three_seconds',_)) , assert(timestamp('three_seconds',Timestamp)).
-reset_three_seconds :- retract(timestamp('three_seconds',_)) , assert(timestamp('three_seconds',0)).
-get_three_seconds(Timestamp) :- timestamp('three_seconds',Timestamp).
+set_three_seconds :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('three_seconds',_)) , 
+	assert(timestamp('three_seconds',Timestamp)) , 
+	!.
+set_three_seconds :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('three_seconds',_)) , 
+	assert(timestamp('three_seconds',Timestamp)).
+reset_three_seconds :- 
+	retract(timestamp('three_seconds',_)) , 
+	assert(timestamp('three_seconds',0)).
+get_three_seconds(Timestamp) :- 
+	timestamp('three_seconds',Timestamp).
 %Zehn Sekunden zwischen Freigabe des Freistoßes und Ausführung
-set_ten_seconds :- timestamp('timestamp',Timestamp) , not(timestamp('ten_seconds',_)) , assert(timestamp('ten_seconds',Timestamp)) , !.
-set_ten_seconds :- timestamp('timestamp',Timestamp) , retract(timestamp('ten_seconds',_)) , assert(timestamp('ten_seconds',Timestamp)).
-reset_ten_seconds :- retract(timestamp('ten_seconds',_)) , assert(timestamp('ten_seconds',0)).
-get_ten_seconds(Timestamp) :- timestamp('ten_seconds',Timestamp).
+set_ten_seconds :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('ten_seconds',_)) , 
+	assert(timestamp('ten_seconds',Timestamp)) , 
+	!.
+set_ten_seconds :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('ten_seconds',_)) , 
+	assert(timestamp('ten_seconds',Timestamp)).
+reset_ten_seconds :- 
+	retract(timestamp('ten_seconds',_)) , 
+	assert(timestamp('ten_seconds',0)).
+get_ten_seconds(Timestamp) :- 
+	timestamp('ten_seconds',Timestamp).
 %Echtspielzeit, also nur Zeit während running, Der Anfang
-set_real_play_time_start :- timestamp('timestamp',Timestamp) , not(timestamp('real_play_time_start',_)) , assert(timestamp('real_play_time_start',Timestamp)) , !.
-set_real_play_time_start :- timestamp('timestamp',Timestamp) , retract(timestamp('real_play_time_start',_)) , assert(timestamp('real_play_time_start',Timestamp)).
-get_real_play_time_start(Timestamp) :- timestamp('real_play_time_start',Timestamp).
+set_real_play_time_start :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('real_play_time_start',_)) , 
+	assert(timestamp('real_play_time_start',Timestamp)) , 
+	!.
+set_real_play_time_start :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('real_play_time_start',_)) , 
+	assert(timestamp('real_play_time_start',Timestamp)).
+get_real_play_time_start(Timestamp) :- 
+	timestamp('real_play_time_start',Timestamp).
 %Echtspielzeit, also nur Zeit während running, Aufaddiert
-set_real_play_time_end :- timestamp('real_play_time_start',Start) , timestamp('timestamp',Timestamp) , not(timestamp('real_play_time_total',_)) , New is Timestamp-Start , assert(timestamp('real_play_time_total',New)) , !.
-set_real_play_time_end :- timestamp('real_play_time_start',Start) , timestamp('timestamp',Timestamp) , timestamp('real_play_time_total',Old) , New is Old+(Timestamp-Start) , retract(timestamp('real_play_time_total',_)) , assert(timestamp('real_play_time_total',New)).
-get_real_play_time_total(Timediff) :- timestamp('real_play_time_total',Timediff).
+set_real_play_time_end :- 
+	timestamp('real_play_time_start',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('real_play_time_total',_)) , 
+	New is Timestamp-Start , 
+	assert(timestamp('real_play_time_total',New)) , 
+	!.
+set_real_play_time_end :- 
+	timestamp('real_play_time_start',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	timestamp('real_play_time_total',Old) , 
+	New is Old+(Timestamp-Start) , 
+	retract(timestamp('real_play_time_total',_)) , 
+	assert(timestamp('real_play_time_total',New)).
+get_real_play_time_total(Timediff) :- 
+	timestamp('real_play_time_total',Timediff).
 %Zeit vom ersten Anpfiff
-set_total_play_time_start :- timestamp('timestamp',Timestamp) , not(timestamp('total_play_time_start',_)) , assert(timestamp('total_play_time_start',Timestamp)) , !.
-set_total_play_time_start :- timestamp('timestamp',Timestamp) , retract(timestamp('total_play_time_start',_)) , assert(timestamp('total_play_time_start',Timestamp)).
-reset_total_play_time_start :- retract(timestamp('total_play_time_start',_)) , assert(timestamp('total_play_time_start',0)).
-get_total_play_time_start(Timestamp) :- timestamp('total_play_time_start',Timestamp).
+set_total_play_time_start :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('total_play_time_start',_)) , 
+	assert(timestamp('total_play_time_start',Timestamp)) , 
+	!.
+set_total_play_time_start :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('total_play_time_start',_)) , 
+	assert(timestamp('total_play_time_start',Timestamp)).
+reset_total_play_time_start :- 
+	retract(timestamp('total_play_time_start',_)) , 
+	assert(timestamp('total_play_time_start',0)).
+get_total_play_time_start(Timestamp) :- 
+	timestamp('total_play_time_start',Timestamp).
 %Totale Spielzeit, jede Halbzeit einzeln
-set_total_play_time_end :- timestamp('total_play_time_start',Start) , timestamp('timestamp',Timestamp) , not(timestamp('total_play_time_total',_)) , New is Timestamp-Start , assert(timestamp('total_play_time_total',New)) , !.
-set_total_play_time_end :- timestamp('total_play_time_start',Start) , timestamp('timestamp',Timestamp) , timestamp('total_play_time_total',Old) , New is Old+(Timestamp-Start) , retract(timestamp('total_play_time_total',_)) , assert(timestamp('total_play_time_total',New)).
-get_total_play_time_total(Sum) :- timestamp('total_play_time_total',Total) , timestamp('total_play_time_start',Start) , timestamp('timestamp',Now) , Sum is Total+(Now-Start).
+set_total_play_time_end :- 
+	timestamp('total_play_time_start',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('total_play_time_total',_)) , 
+	New is Timestamp-Start , 
+	assert(timestamp('total_play_time_total',New)) , 
+	!.
+set_total_play_time_end :- 
+	timestamp('total_play_time_start',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	timestamp('total_play_time_total',Old) , 
+	New is Old+(Timestamp-Start) , 
+	retract(timestamp('total_play_time_total',_)) , 
+	assert(timestamp('total_play_time_total',New)).
+get_total_play_time_total(Sum) :- 
+	timestamp('total_play_time_total',Total) , 
+	timestamp('total_play_time_start',Start) , 
+	timestamp('timestamp',Now) , 
+	Sum is Total+(Now-Start).
 %Timeout gelb Anfang
-set_timeout_start_yellow :- timestamp('timestamp',Timestamp) , not(timestamp('timeout_start_yellow',_)) , assert(timestamp('timeout_start_yellow',Timestamp)) , !.
-set_timeout_start_yellow :- timestamp('timestamp',Timestamp) , retract(timestamp('timeout_start_yellow',_)) , assert(timestamp('timeout_start_yellow',Timestamp)).
-get_timeout_start_yellow(Timestamp) :- timestamp('timeout_start_yellow',Timestamp).
+set_timeout_start_yellow :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('timeout_start_yellow',_)) , 
+	assert(timestamp('timeout_start_yellow',Timestamp)) , 
+	!.
+set_timeout_start_yellow :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('timeout_start_yellow',_)) , 
+	assert(timestamp('timeout_start_yellow',Timestamp)).
+get_timeout_start_yellow(Timestamp) :- 
+	timestamp('timeout_start_yellow',Timestamp).
 %Timeout blau Anfang
-set_timeout_start_blue :- timestamp('timestamp',Timestamp) , not(timestamp('timeout_start_blue',_)) , assert(timestamp('timeout_start_blue',Timestamp)) , !.
-set_timeout_start_blue :- timestamp('timestamp',Timestamp) , retract(timestamp('timeout_start_blue',_)) , assert(timestamp('timeout_start_blue',Timestamp)).
-get_timeout_start_blue(Timestamp) :- timestamp('timeout_start_blue',Timestamp).
+set_timeout_start_blue :- 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('timeout_start_blue',_)) , 
+	assert(timestamp('timeout_start_blue',Timestamp)) , 
+	!.
+set_timeout_start_blue :- 
+	timestamp('timestamp',Timestamp) , 
+	retract(timestamp('timeout_start_blue',_)) , 
+	assert(timestamp('timeout_start_blue',Timestamp)).
+get_timeout_start_blue(Timestamp) :- 
+	timestamp('timeout_start_blue',Timestamp).
 %timeout gelb Übersicht
-set_yellow_timeout_end :- timestamp('timeout_start_yellow',Start) , timestamp('timestamp',Timestamp) , not(timestamp('timeout_time_yellow',_)) , New is Timestamp-Start , assert(timestamp('timeout_time_yellow',New)) , !.
-set_yellow_timeout_end :- timestamp('timeout_start_yellow',Start) , timestamp('timestamp',Timestamp) , timestamp('timeout_time_yellow',Old) , New is Old+(Timestamp-Start) , retract(timestamp('timeout_time_yellow',_)) , assert(timestamp('timeout_time_yellow',New)).
-get_yellow_timeout_total(Timediff) :- timestamp('timeout_time_yellow',Timediff).
+set_yellow_timeout_end :- 
+	timestamp('timeout_start_yellow',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('timeout_time_yellow',_)) , 
+	New is Timestamp-Start , 
+	assert(timestamp('timeout_time_yellow',New)) , 
+	!.
+set_yellow_timeout_end :- 
+	timestamp('timeout_start_yellow',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	timestamp('timeout_time_yellow',Old) , 
+	New is Old+(Timestamp-Start) , 
+	retract(timestamp('timeout_time_yellow',_)) , 
+	assert(timestamp('timeout_time_yellow',New)).
+get_yellow_timeout_total(Timediff) :- 
+	timestamp('timeout_time_yellow',Timediff).
 %timeout blau Übersicht
-set_blue_timeout_end :- timestamp('timeout_start_blue',Start) , timestamp('timestamp',Timestamp) , not(timestamp('timeout_time_blue',_)) , New is Timestamp-Start , assert(timestamp('timeout_time_blue',New)) , !.
-set_blue_timeout_end :- timestamp('timeout_start_blue',Start) , timestamp('timestamp',Timestamp) , timestamp('timeout_time_blue',Old) , New is Old+(Timestamp-Start) , retract(timestamp('timeout_time_blue',_)) , assert(timestamp('timeout_time_blue',New)).
-get_blue_timeout_total(Timediff) :- timestamp('timeout_time_blue',Timediff).
+set_blue_timeout_end :- 
+	timestamp('timeout_start_blue',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	not(timestamp('timeout_time_blue',_)) , 
+	New is Timestamp-Start , 
+	assert(timestamp('timeout_time_blue',New)) , 
+	!.
+set_blue_timeout_end :- 
+	timestamp('timeout_start_blue',Start) , 
+	timestamp('timestamp',Timestamp) , 
+	timestamp('timeout_time_blue',Old) , 
+	New is Old+(Timestamp-Start) , 
+	retract(timestamp('timeout_time_blue',_)) , 
+	assert(timestamp('timeout_time_blue',New)).
+get_blue_timeout_total(Timediff) :- 
+	timestamp('timeout_time_blue',Timediff).
 
 %Timeouts
 :- dynamic timeouts/3.
 
 %called from outside
-start_yellow_timeout :- timestamp('timeout_start',0) , timeouts('timeouts',Y,B) , set_total_play_time_end , set_local_play_state(1) , set_timeout_start , retract(timeouts('timeouts',_,_)) , New is Y+1 , assert(timeouts('timeouts',New,B)).
-start_blue_timeout   :- timestamp('timeout_start',0) , timeouts('timeouts',Y,B) , set_total_play_time_end , set_local_play_state(1) , set_timeout_start , retract(timeouts('timeouts',_,_)) , New is B+1 , assert(timeouts('timeouts',Y,New)).
-end_yellow_timeout   :- set_local_play_state(1) , set_timeout_yellow_end, set_total_play_time_start , retract(timestamp('timeout_start_yellow',_)) , assert(timestamp('timeout_start_yellow',0)).
-end_blue_timeout     :- set_local_play_state(1) , set_timeout_blue_end  , set_total_play_time_start , retract(timestamp('timeout_start_blue',_))   , assert(timestamp('timeout_start_blue',0)).
+start_yellow_timeout :- 
+	timestamp('timeout_start',0) , 
+	timeouts('timeouts',Y,B) , 
+	set_total_play_time_end ,
+	set_local_play_state(1) , 
+	set_timeout_start , 
+	retract(timeouts('timeouts',_,_)) , 
+	New is Y+1 , 
+	assert(timeouts('timeouts',New,B)).
+start_blue_timeout   :- 
+	timestamp('timeout_start',0) , 
+	timeouts('timeouts',Y,B) , 
+	set_total_play_time_end , 
+	set_local_play_state(1) , 
+	set_timeout_start , 
+	retract(timeouts('timeouts',_,_)) , 
+	New is B+1 , 
+	assert(timeouts('timeouts',Y,New)).
+end_yellow_timeout   :- 
+	set_local_play_state(1) , 
+	set_timeout_yellow_end, 
+	set_total_play_time_start , 
+	retract(timestamp('timeout_start_yellow',_)) , 
+	assert(timestamp('timeout_start_yellow',0)).
+end_blue_timeout     :- 
+	set_local_play_state(1) , 
+	set_timeout_blue_end , 
+	set_total_play_time_start , 
+	retract(timestamp('timeout_start_blue',_)) , 
+	assert(timestamp('timeout_start_blue',0)).
 
 %play_state: global_play_state, local_play_state, local_next_play_state
 :- dynamic play_state/2.
@@ -117,20 +312,38 @@ end_blue_timeout     :- set_local_play_state(1) , set_timeout_blue_end  , set_to
 :- dynamic result/3.
 
 %called from outside
-get_standing(X,Y) :- result('result',X,Y).
+get_standing(X,Y) :- 
+	result('result',X,Y).
 
 %called from outside
-end_first_half :- reset_total_play_time_start.
+end_first_half :- 
+	reset_total_play_time_start.
 
 %Gamestate Wechsel aus Running in Stopped
-set_next_play_state(New) :- play_state('local_play_state',2) , set_local_next_play_state(New) , set_local_play_state(1) , reset_touch , set_real_play_time_end.
+set_next_play_state(New) :- 
+	play_state('local_play_state',2) , 
+	set_local_next_play_state(New) , 
+	set_local_play_state(1) , 
+	reset_touch , 
+	set_real_play_time_end.
 
 %Init
-game_init :- set_local_next_play_state(7) , set_local_play_state(0) , assert(result('result',0,0)) , assert(timestamp('total_play_time_start',0)) , assert(timestamp('total_play_time_total',0)) , assert(timestamp('timeout_start_yellow',0)) , assert(timestamp('timeout_start_blue',0)) , assert(timeouts('timeouts',0,0)) , assert(check_offside(0)) , assert(ball_status('ball',0,0,0,0)).
+game_init :- 
+	set_local_next_play_state(7) , 
+	set_local_play_state(0) , 
+	assert(result('result',0,0)) , 
+	assert(timestamp('total_play_time_start',0)) , 
+	assert(timestamp('total_play_time_total',0)) , 
+	assert(timestamp('timeout_start_yellow',0)) , 
+	assert(timestamp('timeout_start_blue',0)) , 
+	assert(timeouts('timeouts',0,0)) , 
+	assert(check_offside(0)) , 
+	assert(ball_status('ball',0,0,0,0)).
 
 %Game control
 %Es macht Probleme wenn Play_States nicht gleich sind
-game_control :- start_game ; set_running.
+game_control :- 
+	start_game ; set_running.
 %nur Running setzen wegen der Probleme
 %game_control :- set_running.
 
