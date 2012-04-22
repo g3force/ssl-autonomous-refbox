@@ -23,7 +23,7 @@ public:
 
 signals:
     void new_filter_data();
-    void new_broken_rule(QString);
+    void new_broken_rule(Broken_Rule*);
 
 private:
     char* argv_tmp[];

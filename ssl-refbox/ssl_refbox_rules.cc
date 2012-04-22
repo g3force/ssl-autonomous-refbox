@@ -2,8 +2,8 @@
 #include <QMutex>
 #include <iostream>
 #include <SWI-Prolog.h>
-#include <libbsmart/field.h>
 #include "global.h"
+#include <libbsmart/field.h>
 
 // log4cxx
 using namespace log4cxx;
@@ -447,7 +447,7 @@ void SSL_Refbox_Rules::run()
 			" broken" << "Broken rules: " << broken_rule_vector.size();
 			LOG4CXX_DEBUG ( logger, o.str() );
 			if(broken_rule_gui.rule_number > 0 && broken_rule_gui.rule_number <= 42) {
-				emit new_broken_rule(Global::rulenames[broken_rule_gui.rule_number - 1].c_str());
+				emit new_broken_rule(&broken_rule_gui);
 			} else {
 				LOG4CXX_WARN ( logger, "Invalid rule number" );
 			}

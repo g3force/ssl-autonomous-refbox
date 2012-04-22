@@ -1,9 +1,18 @@
 #include "ui_GuiControls.h"
 #include "gamearea.h"
 #include "guiactions.h"
+#include <QTableView>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QList>
+#include "global.h"
+#include "filter_data.h"
+#include "libbsmart/vector2.h"
+#include <ctime>
 
 GuiActions::GuiActions(Ui::GuiControls* gui, QObject* win) :
 		QObject(win), m_gui(gui) {
+	brokenRulesModel = new QStandardItemModel();
 }
 
 GuiActions::~GuiActions() {
@@ -71,8 +80,8 @@ void GuiActions::connectActions() {
 			SLOT ( setLogFrameNumberEnabled(bool) ));
 
 	// broken rules
-	connect(m_gui->gamearea->rules, SIGNAL ( new_broken_rule( QString ) ), this,
-			SLOT ( insert_into_lst_broken_rules( QString ) ));
+	connect(m_gui->gamearea->rules, SIGNAL ( new_broken_rule( Broken_Rule* ) ), this,
+			SLOT ( insert_into_lst_broken_rules( Broken_Rule* ) ));
 }
 
 void GuiActions::fullscreen(bool f) {
@@ -141,10 +150,10 @@ void GuiActions::change_ball_last_touched(QString text) {
 }
 
 void GuiActions::update_frame(int frame) {
-		if (m_gui->gamearea->vision->log_control->get_play_speed() != 0.0) {
-			if (frame % ((int)m_gui->gamearea->vision->log_control->get_play_speed()*10) == 0)
+	if (m_gui->gamearea->vision->log_control->get_play_speed() != 0.0) {
+		if (frame % ((int) m_gui->gamearea->vision->log_control->get_play_speed() * 10) == 0)
 			force_update_frame(frame);
-		}
+	}
 }
 
 void GuiActions::force_update_frame(int frame) {
@@ -195,6 +204,39 @@ void GuiActions::log_frame_forward() {
 	force_update_frame(m_gui->gamearea->vision->log_control->get_current_frame());
 }
 
-void GuiActions::insert_into_lst_broken_rules(QString rulename) {
-	m_gui->lst_brokenRules->insertItem(0, rulename);
+void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
+	if (m_gui->tbl_brokenRules->model() == NULL) {
+		m_gui->tbl_brokenRules->setModel(brokenRulesModel);
+	}
+	if (brokenRule != NULL && brokenRule->rule_number >= 0) {
+		QString rulename = Global::rulenames[brokenRule->rule_number - 1].c_str();
+		QList<QStandardItem*> *row = new QList<QStandardItem*>();
+
+		// time
+		struct tm * timeinfo;
+		timeinfo = localtime((time_t*) &brokenRule->when_broken);
+		const char* time = ctime((const time_t*) &brokenRule->when_broken);
+//		std::ostringstream whenBroken;
+//		whenBroken << brokenRule->when_broken;
+//		QStandardItem *itmRuleno = new QStandardItem(whenBroken.str().c_str());
+		QStandardItem *itmRuleno = new QStandardItem(time);
+		row->append(itmRuleno);
+
+		// rule
+		QStandardItem *itmRulename = new QStandardItem(rulename);
+		row->append(itmRulename);
+
+		// team
+		std::ostringstream team;
+		team << brokenRule->rule_breaker.x;
+		QStandardItem *itmTeam = new QStandardItem(team.str().c_str());
+		row->append(itmTeam);
+
+		// rule breaker
+		std::ostringstream ruleBreaker;
+		ruleBreaker << brokenRule->rule_breaker.y;
+		QStandardItem *itmRulebreaker = new QStandardItem(ruleBreaker.str().c_str());
+		row->append(itmRulebreaker);
+		brokenRulesModel->insertRow(0, *row);
+	}
 }
