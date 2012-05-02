@@ -5,7 +5,6 @@
 #include "ui_GuiPropertiesDlg.h"
 
 #include <string>
-//#include <regex>
 #include "global.h"
 
 using std::string;
@@ -23,6 +22,7 @@ private:
     void init();
     bool isIpAddress(string ip);
     bool isPort(string port);
+    int getNextNumber(string str, char d);
 
  private slots:
 	 void configUpdate();

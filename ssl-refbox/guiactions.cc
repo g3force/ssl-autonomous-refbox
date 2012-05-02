@@ -96,14 +96,12 @@ void GuiActions::connectActions()
 
 void GuiActions::fullscreen ( bool f )
 {
-	GuiPropertiesDlg *propDlng = new GuiPropertiesDlg;
-	propDlng->show();
-//    QWidget* win = qobject_cast<QWidget*> ( parent() );
-//    if ( f ) {
-//        win->showFullScreen();
-//    } else {
-//        win->showNormal();
-//    }
+    QWidget* win = qobject_cast<QWidget*> ( parent() );
+    if ( f ) {
+        win->showFullScreen();
+    } else {
+        win->showNormal();
+    }
 }
 
 void GuiActions::initializeSlider ( int min, int max, int singleStep,
@@ -198,6 +196,6 @@ void GuiActions::change_show_rules ( QString text )
 }
 
 void GuiActions::showPropertiesDlg() {
-	GuiPropertiesDlg *propDlng = new GuiPropertiesDlg;
-	propDlng->show();
+	GuiPropertiesDlg *propDlg = new GuiPropertiesDlg();
+	propDlg->show();
 }

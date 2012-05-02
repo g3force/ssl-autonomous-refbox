@@ -28,13 +28,14 @@ HEADERS += glextra.h \
  field_hardware.h \
  ssl_refbox_rules.h \
  global.h \
+ GuiPropertiesDlg.h \
  ../proto/messages_robocup_ssl_detection.pb.h \
  ../proto/messages_robocup_ssl_geometry.pb.h \
  ../proto/messages_robocup_ssl_refbox_log.pb.h \
  ../proto/messages_robocup_ssl_wrapper.pb.h \
  ../ConfigFile/ConfigFile.h
 FORMS += GuiControls.ui \
-GuiPropertiesDlg.ui
+ GuiPropertiesDlg.ui
 SOURCES += glextra.cc \
  gamearea.cc \
  guiactions.cc \
@@ -50,6 +51,7 @@ SOURCES += glextra.cc \
  field_hardware.cc \
  ssl_refbox_rules.cc \
  global.cc \
+ GuiPropertiesDlg.cpp \
  ../libbsmart/pose.cc \
  ../libbsmart/vector2.cc \
  ../libbsmart/multicast_socket.cc \
