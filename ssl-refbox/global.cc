@@ -13,7 +13,7 @@ using namespace log4cxx::helpers;
 using namespace std;
 
 // name logger is used in another class :o don't know why...
-LoggerPtr logger42 ( Logger::getLogger ( "Global" ) );
+LoggerPtr logger42(Logger::getLogger("Global"));
 
 /**
  * @brief global reference to the config file
@@ -81,39 +81,72 @@ const std::string Global::rulenames[42] = { "Robot Number exceeded", //1
  * The config file has to be called ssl-autonomous-refbox.conf
  * @param custConfig custom config file to try first
  */
-void Global::loadConfig(string custConfig)
-{
-    string configFile = "ssl-autonomous-refbox.conf";
-    string home = getenv ( "HOME" );
-    if ( home.empty() ) {
-        home = "/root";
-    }
-    string configPath[] = {custConfig,
-                           home + "/.ssl-autonomous-refbox/" + configFile,
-                           "/etc/" + configFile,
-                           configFile
-                          };
-    int i=0;
-    if(custConfig.empty()) {
-    	i = 1;
-    }
+void Global::loadConfig(string custConfig) {
+	string configPath = NULL;
+	if (custConfig.empty()) {
+		configPath = getConfigPath();
+	} else {
+		configPath = custConfig;
+	}
 
-    for ( ; i<4; i++ ) {
-        std::ifstream in ( configPath[i].c_str() );
-        if ( in ) {
-            in >> Global::config;
-            LOG4CXX_INFO ( logger42, "ConfigFile " + configPath[i] + " found and loaded." );
-            break;
-        } else {
-            LOG4CXX_DEBUG ( logger42, "ConfigFile " + configPath[i] + " not found." );
-        }
-    }
+	std::ifstream in(configPath.c_str());
+	if (in) {
+		in >> Global::config;
+		LOG4CXX_INFO( logger42, "ConfigFile " + configPath + " loaded.");
+	} else {
+		LOG4CXX_DEBUG( logger42, "ConfigFile " + configPath + " not found.");
+	}
 }
 
+/**
+ * @brief Save config file.
+ */
+void Global::saveConfig() {
+	string configPath = getConfigPath();
 
-//static void setLogFile(string _logFile) {
-//	logFile = _logFile;
-//}
-//static string getLogFile() {
-//	return logFile;
-//}
+	std::ofstream out(configPath.c_str());
+	if (out) {
+		out << Global::config;
+		LOG4CXX_INFO( logger42, "ConfigFile " + configPath + " saved.");
+	}
+}
+
+/**
+ * @brief Locate config file and return it
+ * Tries to locate the config file from following order:
+ * 1. In the current folder
+ * 2. In the users home folder (/home/user/.ssl-autonomous-refbox/)
+ * 3. In /etc/
+ * The config file has to be called ssl-autonomous-refbox.conf
+ */
+string Global::getConfigPath() {
+	string configFile = "ssl-autonomous-refbox.conf";
+	string home = getenv("HOME");
+	if (home.empty()) {
+		home = "/root";
+	}
+
+	string configPath[] =
+			{ configFile, home + "/.ssl-autonomous-refbox/" + configFile, "/etc/" + configFile };
+
+	for (int i = 0; i < 3; i++) {
+		std::ifstream in(configPath[i].c_str());
+		if (in) {
+			in.close();
+			LOG4CXX_INFO( logger42, "ConfigFile " + configPath[i] + " found.");
+			return configPath[i];
+		}
+	}
+	LOG4CXX_INFO( logger42, "No ConfigFile found.");
+
+	createDefaultConfigFile(configPath[1]);
+	return configPath[1];
+}
+
+/**
+ * TODO create a config file with default values
+ */
+void Global::createDefaultConfigFile(string path) {
+	LOG4CXX_INFO( logger42, "Default ConfigFile " + path + " created.");
+}
+

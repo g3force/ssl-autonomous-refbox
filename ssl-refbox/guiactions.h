@@ -7,6 +7,7 @@ class GuiActions : public QObject
 {
 Q_OBJECT
 Ui::GuiControls* m_gui;
+
 public:
     GuiActions(Ui::GuiControls*, QObject* = 0);
     ~GuiActions();
@@ -32,6 +33,7 @@ public slots:
     void log_frame_back();
     void log_frame_forward();
     void insert_into_lst_broken_rules(Broken_Rule*);
+    void showPropertiesDlg();
 private:
     QStandardItemModel *brokenRulesModel;
 };

@@ -16,39 +16,40 @@
 using namespace log4cxx;
 LoggerPtr GLExtra::logger(Logger::getLogger("GLExtra"));
 
-
 /**
  * @brief Initialize GLExtra
  */
-GLExtra::GLExtra() {
+GLExtra::GLExtra()
+{
 	current_ball_percepts.clear();
-	ball_samples.clear();
-	ball_model = Ball_Sample();
-	tmp_perc_robots.clear();
-	current_robot_percepts.clear();
-	tmp_sample_robots.clear();
-	robot_samples.clear();
-	robot_models.clear();
-	broken_rule_vector.clear();
+    ball_samples.clear();
+    ball_model = Ball_Sample();
+    tmp_perc_robots.clear();
+    current_robot_percepts.clear();
+    tmp_sample_robots.clear();
+    robot_samples.clear();
+    robot_models.clear();
+    broken_rule_vector.clear();
 }
 
 /**
  * @brief Initialize GLExtra
  * @param filter_data_
  */
-GLExtra::GLExtra(Filter_Data* filter_data_) {
-	filter_data = filter_data_;
-	current_ball_percepts.clear();
-	ball_samples.clear();
-	ball_model = Ball_Sample();
-	tmp_perc_robots.clear();
-	current_robot_percepts.clear();
-	tmp_sample_robots.clear();
-	robot_samples.clear();
-	robot_models.clear();
-	broken_rule_vector.clear();
-	internal_play_states = BSmart::Int_Vector(0, 0);
-	gamestate = new BSmart::Game_States;
+GLExtra::GLExtra ( Filter_Data* filter_data_ )
+{
+    filter_data = filter_data_;
+    current_ball_percepts.clear();
+    ball_samples.clear();
+    ball_model = Ball_Sample();
+    tmp_perc_robots.clear();
+    current_robot_percepts.clear();
+    tmp_sample_robots.clear();
+    robot_samples.clear();
+    robot_models.clear();
+    broken_rule_vector.clear();
+    internal_play_states = BSmart::Int_Vector ( 0, 0 );
+    gamestate = new BSmart::Game_States;
 }
 
 GLExtra::~GLExtra() {
@@ -205,25 +206,27 @@ void GLExtra::draw_goal() {
  * @brief Draw marks of field (goal, penalty mark, center mark)
  * NOTE keep in sync with field.h
  */
-void GLExtra::draw_marks() {
-	static const float pt = (BSmart::Field::half_field_width - BSmart::Field::penalty_mark_distance);
-	bglBresCircle(BSmart::Field::center_radius); //Center circle
-	glColor3f(1, 0, 0); //Center mark color
-	bglPoint(0, 0, 20); //center mark
+void GLExtra::draw_marks()
+{
+    static const float pt = ( BSmart::Field::half_field_width
+                              - BSmart::Field::penalty_mark_distance );
+    bglBresCircle ( BSmart::Field::center_radius ); //Center circle
+    glColor3f ( 1, 0, 0 ); //Center mark color
+    bglPoint ( 0, 0, 20 ); //center mark
 
-	glColor3f(0.0, 0.3, 1.0); //right team color
-	bglPoint(pt, 0, 20); //right penalty mark
-	draw_goal(); //right goal
+    glColor3f ( 0.0, 0.3, 1.0 ); //right team color
+    bglPoint ( pt, 0, 20 ); //right penalty mark
+    draw_goal(); //right goal
 
-	glColor3f(1.0, 1.0, 0.0); //left team color
+    glColor3f ( 1.0, 1.0, 0.0 ); //left team color
 
-	glPushMatrix();
-	{
-		glScalef(-1.0, -1.0, 0.0); //mirror
-		bglPoint(pt, 0, 20); //left penalty mark
-		draw_goal(); //right goal
-	}
-	glPopMatrix();
+    glPushMatrix();
+    {
+        glScalef ( -1.0, -1.0, 0.0 ); //mirror
+        bglPoint ( pt, 0, 20 ); //left penalty mark
+        draw_goal(); //right goal
+    }
+    glPopMatrix();
 }
 
 /**
@@ -390,7 +393,6 @@ void GLExtra::draw_robot(int x, int y, SSLRefbox::Colors::Color color, double ro
 		}
 		glPopMatrix();
 	}
-
 }
 
 /**

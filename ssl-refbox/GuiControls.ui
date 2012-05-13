@@ -85,8 +85,15 @@
     <addaction name="separator"/>
     <addaction name="actionFull_Screen"/>
    </widget>
+   <widget class="QMenu" name="menuConfiguration">
+    <property name="title">
+     <string>Configuration</string>
+    </property>
+    <addaction name="actionOPen"/>
+   </widget>
    <addaction name="menu_Menu"/>
    <addaction name="menuUI"/>
+   <addaction name="menuConfiguration"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -577,6 +584,16 @@
    </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="actionIP_Configuration">
+   <property name="text">
+    <string>IP Configuration</string>
+   </property>
+  </action>
+  <action name="actionOPen">
+   <property name="text">
+    <string>Open</string>
    </property>
   </action>
  </widget>

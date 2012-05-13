@@ -9,6 +9,7 @@
 #include "filter_data.h"
 #include "libbsmart/vector2.h"
 #include <ctime>
+#include "GuiPropertiesDlg.h"
 
 GuiActions::GuiActions(Ui::GuiControls* gui, QObject* win) :
 		QObject(win), m_gui(gui) {
@@ -241,4 +242,10 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 		row->append(itmRulebreaker);
 		brokenRulesModel->insertRow(0, *row);
 	}
+}
+
+
+void GuiActions::showPropertiesDlg() {
+	GuiPropertiesDlg *propDlg = new GuiPropertiesDlg();
+	propDlg->show();
 }
