@@ -19,6 +19,7 @@ LoggerPtr logger42(Logger::getLogger("Global"));
  * @brief global reference to the config file
  */
 ConfigFile Global::config;
+string Global::configFilePath;
 
 /**
  * @brief global reference to the log file to load on start
@@ -82,19 +83,18 @@ const std::string Global::rulenames[42] = { "Robot Number exceeded", //1
  * @param custConfig custom config file to try first
  */
 void Global::loadConfig(string custConfig) {
-	string configPath = NULL;
 	if (custConfig.empty()) {
-		configPath = getConfigPath();
+		configFilePath = getConfigPath();
 	} else {
-		configPath = custConfig;
+		configFilePath = custConfig;
 	}
 
-	std::ifstream in(configPath.c_str());
+	std::ifstream in(configFilePath.c_str());
 	if (in) {
 		in >> Global::config;
-		LOG4CXX_INFO( logger42, "ConfigFile " + configPath + " loaded.");
+		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " loaded.");
 	} else {
-		LOG4CXX_DEBUG( logger42, "ConfigFile " + configPath + " not found.");
+		LOG4CXX_DEBUG( logger42, "ConfigFile " + configFilePath + " not found.");
 	}
 }
 
@@ -102,12 +102,11 @@ void Global::loadConfig(string custConfig) {
  * @brief Save config file.
  */
 void Global::saveConfig() {
-	string configPath = getConfigPath();
 
-	std::ofstream out(configPath.c_str());
+	std::ofstream out(configFilePath.c_str());
 	if (out) {
 		out << Global::config;
-		LOG4CXX_INFO( logger42, "ConfigFile " + configPath + " saved.");
+		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " saved.");
 	}
 }
 

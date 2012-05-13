@@ -22,6 +22,7 @@ GuiActions::~GuiActions() {
 void GuiActions::connectActions() {
 	connect(m_gui->actionAbout_Qt, SIGNAL ( triggered() ), qApp, SLOT ( aboutQt() ));
 	connect(m_gui->actionFull_Screen, SIGNAL ( toggled ( bool ) ), this, SLOT ( fullscreen ( bool ) ));
+	connect(m_gui->actionOPen, SIGNAL ( triggered() ), this, SLOT ( showPropertiesDlg() ));
 
 	//Buttons for load/start logfile
 	connect(m_gui->record_log, SIGNAL ( clicked() ), m_gui->gamearea->vision, SLOT ( record() ));
@@ -243,7 +244,6 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 		brokenRulesModel->insertRow(0, *row);
 	}
 }
-
 
 void GuiActions::showPropertiesDlg() {
 	GuiPropertiesDlg *propDlg = new GuiPropertiesDlg();
