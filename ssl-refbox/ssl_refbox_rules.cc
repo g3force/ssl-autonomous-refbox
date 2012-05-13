@@ -283,15 +283,15 @@ void SSL_Refbox_Rules::run() {
 
 			if (PL_call_predicate(NULL, PL_Q_NORMAL, check_rules, broken_rule)) {
 				int rule = -42;
-				PL_get_integer(broken_rule, &rule);
+				result = PL_get_integer(broken_rule, &rule);
 
 				int team = -42;
 				int id = -42;
 				term_t rule_breaker_team = PL_new_term_refs(2);
 				term_t rule_breaker_id = rule_breaker_team + 1;
 				PL_call_predicate(NULL, PL_Q_NORMAL, get_rule_breaker, rule_breaker_team);
-				PL_get_integer(rule_breaker_team, &team);
-				PL_get_integer(rule_breaker_id, &id);
+				result = PL_get_integer(rule_breaker_team, &team);
+				result = PL_get_integer(rule_breaker_id, &id);
 
 				BSmart::Int_Vector rule_breaker(team, id);
 
@@ -299,11 +299,11 @@ void SSL_Refbox_Rules::run() {
 					int local_play_state_test = -42;
 					term_t local_play_state_test_term = PL_new_term_refs(1);
 					PL_call_predicate(NULL, PL_Q_NORMAL, get_local_play_state, local_play_state_test_term);
-					PL_get_integer(local_play_state_test_term, &local_play_state_test);
+					result = PL_get_integer(local_play_state_test_term, &local_play_state_test);
 					int left = -42;
 					term_t left_team = PL_new_term_refs(1);
 					PL_call_predicate(NULL, PL_Q_NORMAL, get_left, left_team);
-					PL_get_integer(left_team, &left);
+					result = PL_get_integer(left_team, &left);
 
 					last_break = rule;
 					last_msg = cur_frm;
@@ -332,14 +332,14 @@ void SSL_Refbox_Rules::run() {
 					PL_call_predicate(NULL, PL_Q_NORMAL, get_left, left_team);
 					PL_call_predicate(NULL, PL_Q_NORMAL, get_local_play_state, local_play_state_test_term_gui);
 					PL_call_predicate(NULL, PL_Q_NORMAL, get_standing, t_standing_yellow);
-					PL_get_integer(freekick_pos_x, &x_tmp);
-					PL_get_integer(freekick_pos_y, &y_tmp);
-					PL_get_integer(freekick_pos_z, &z_tmp);
-					PL_get_integer(local_play_state_test_term_gui, &local_play_state_test_gui);
-					PL_get_integer(t_standing_yellow, &standing_yellow);
-					PL_get_integer(t_standing_blue, &standing_blue);
+					result = PL_get_integer(freekick_pos_x, &x_tmp);
+					result = PL_get_integer(freekick_pos_y, &y_tmp);
+					result = PL_get_integer(freekick_pos_z, &z_tmp);
+					result = PL_get_integer(local_play_state_test_term_gui, &local_play_state_test_gui);
+					result = PL_get_integer(t_standing_yellow, &standing_yellow);
+					result = PL_get_integer(t_standing_blue, &standing_blue);
 					BSmart::Int_Vector freekick_pos(x_tmp, y_tmp);
-					PL_get_integer(left_team, &left);
+					result = PL_get_integer(left_team, &left);
 
 					broken_rule_gui.rule_number = rule;
 					broken_rule_gui.when_broken = cur_timestamp;
@@ -450,12 +450,12 @@ void SSL_Refbox_Rules::run() {
 		int local_play_state_test = -42;
 		term_t local_play_state_test_term = PL_new_term_refs(1);
 		PL_call_predicate(NULL, PL_Q_NORMAL, get_local_play_state, local_play_state_test_term);
-		PL_get_integer(local_play_state_test_term, &local_play_state_test);
+		result = PL_get_integer(local_play_state_test_term, &local_play_state_test);
 
 		int local_next_play_state_test = -42;
 		term_t local_next_play_state_test_term = PL_new_term_refs(1);
 		PL_call_predicate(NULL, PL_Q_NORMAL, get_local_next_play_state, local_next_play_state_test_term);
-		PL_get_integer(local_next_play_state_test_term, &local_next_play_state_test);
+		result = PL_get_integer(local_next_play_state_test_term, &local_next_play_state_test);
 
 		internal_play_states.x = local_play_state_test;
 		internal_play_states.y = local_next_play_state_test;
