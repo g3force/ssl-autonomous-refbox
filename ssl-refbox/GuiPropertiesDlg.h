@@ -22,6 +22,7 @@ private:
     bool isIpAddress(string ip);
     bool isPort(string port);
     int getNextNumber(string str, char d);
+    bool isNum(string);
 
  private slots:
 	 void configUpdate();

@@ -83,18 +83,20 @@ const std::string Global::rulenames[42] = { "Robot Number exceeded", //1
  * @param custConfig custom config file to try first
  */
 void Global::loadConfig(string custConfig) {
+	string configFile;
 	if (custConfig.empty()) {
-		configFilePath = getConfigPath();
+		configFile = getConfigPath();
 	} else {
+		configFile = custConfig;
 		configFilePath = custConfig;
 	}
 
-	std::ifstream in(configFilePath.c_str());
+	std::ifstream in(configFile.c_str());
 	if (in) {
 		in >> Global::config;
-		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " loaded.");
+		LOG4CXX_INFO( logger42, "ConfigFile " + configFile + " loaded.");
 	} else {
-		LOG4CXX_DEBUG( logger42, "ConfigFile " + configFilePath + " not found.");
+		LOG4CXX_DEBUG( logger42, "ConfigFile " + configFile + " not found.");
 	}
 }
 
@@ -125,8 +127,11 @@ string Global::getConfigPath() {
 		home = "/root";
 	}
 
+
 	string configPath[] =
 			{ configFile, home + "/.ssl-autonomous-refbox/" + configFile, "/etc/" + configFile };
+	// save path (we cant save to /etc and we do not want to save to configFile)
+	configFilePath = configPath[1];
 
 	for (int i = 0; i < 3; i++) {
 		std::ifstream in(configPath[i].c_str());
