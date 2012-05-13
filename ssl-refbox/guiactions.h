@@ -5,6 +5,7 @@ class GuiActions : public QObject
 {
 Q_OBJECT
 Ui::GuiControls* m_gui;
+
 public:
     GuiActions(Ui::GuiControls*, QObject* = 0);
     ~GuiActions();
@@ -24,5 +25,6 @@ public slots:
     void update_frame(int);
     void slider_action(int);
     void change_show_rules(QString);
+    void showPropertiesDlg();
 private:
 };

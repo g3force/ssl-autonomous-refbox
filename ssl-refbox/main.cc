@@ -22,6 +22,7 @@
 #include <GL/glut.h>
 #include "ui_GuiControls.h"
 #include "guiactions.h"
+#include "GuiPropertiesDlg.h"
 #include <iostream>
 #include <stdio.h>
 #include <sys/stat.h>

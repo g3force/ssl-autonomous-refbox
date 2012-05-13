@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GuiPropertiesDlgClass</class>
+ <widget class="QDialog" name="GuiPropertiesDlgClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>383</width>
+    <height>209</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GuiPropertiesDlg</string>
+  </property>
+  <widget class="QPushButton" name="saveBtn">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>170</y>
+     <width>97</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cancelBtn">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>170</y>
+     <width>97</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>87</y>
+     <width>69</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Refbox IP:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="refbox_ip_Edit">
+   <property name="geometry">
+    <rect>
+     <x>122</x>
+     <y>87</y>
+     <width>257</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>5</y>
+     <width>89</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>SSL Vision IP:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="refbox_port_Edit">
+   <property name="geometry">
+    <rect>
+     <x>122</x>
+     <y>120</y>
+     <width>257</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>38</y>
+     <width>106</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>SSL Vision Port:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="sslv_ip_Edit">
+   <property name="geometry">
+    <rect>
+     <x>122</x>
+     <y>5</y>
+     <width>257</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="sslv_port_Edit">
+   <property name="geometry">
+    <rect>
+     <x>122</x>
+     <y>38</y>
+     <width>257</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>86</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Refbox Port:</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

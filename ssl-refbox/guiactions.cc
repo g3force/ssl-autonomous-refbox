@@ -1,6 +1,7 @@
 #include "ui_GuiControls.h"
 #include "gamearea.h"
 #include "guiactions.h"
+#include "GuiPropertiesDlg.h"
 
 GuiActions::GuiActions ( Ui::GuiControls* gui, QObject* win ) :
         QObject ( win ), m_gui ( gui )
@@ -16,6 +17,7 @@ void GuiActions::connectActions()
     connect ( m_gui->actionAbout_Qt, SIGNAL ( triggered() ), qApp, SLOT ( aboutQt() ) );
     connect ( m_gui->actionFull_Screen, SIGNAL ( toggled ( bool ) ), this,
               SLOT ( fullscreen ( bool ) ) );
+    connect ( m_gui->actionOPen, SIGNAL ( triggered() ), this, SLOT ( showPropertiesDlg() ) );
 
     //Buttons for load/start logfile
     connect ( m_gui->record_log, SIGNAL ( clicked() ), m_gui->gamearea->vision,
@@ -191,4 +193,9 @@ void GuiActions::slider_action ( int action )
 void GuiActions::change_show_rules ( QString text )
 {
     m_gui->show_rules->setText ( text );
+}
+
+void GuiActions::showPropertiesDlg() {
+	GuiPropertiesDlg *propDlg = new GuiPropertiesDlg();
+	propDlg->show();
 }
