@@ -214,12 +214,14 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 
 		// time
 		struct tm * timeinfo;
-		timeinfo = localtime((time_t*) &brokenRule->when_broken);
-		const char* time = ctime((const time_t*) &brokenRule->when_broken);
-//		std::ostringstream whenBroken;
-//		whenBroken << brokenRule->when_broken;
-//		QStandardItem *itmRuleno = new QStandardItem(whenBroken.str().c_str());
+		BSmart::Time_Value timestamp = brokenRule->when_broken;
+		timestamp /= 1000;
+		timeinfo = localtime((time_t*) &timestamp);
+		const char* time = ctime((const time_t*) &timestamp);
 		QStandardItem *itmRuleno = new QStandardItem(time);
+//		std::ostringstream whenBroken;
+//		whenBroken << static_cast<long long>(brokenRule->when_broken);
+//		QStandardItem *itmRuleno = new QStandardItem(whenBroken.str().c_str());
 		row->append(itmRuleno);
 
 		// rule
