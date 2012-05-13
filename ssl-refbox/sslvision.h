@@ -59,7 +59,7 @@ public:
 
 public slots:
     void record();
-    void play_record();
+    void play_record(QString logFile = "");
 
 signals:
     //gamearea->glDraw
@@ -119,7 +119,7 @@ private:
     void start_record();
     int end_record();
     bool play;
-    int start_play_record();
+    int start_play_record(QString logFile = "");
     void end_play_record();
     QString fileName;
 };

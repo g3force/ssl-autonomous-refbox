@@ -12,9 +12,11 @@ ssl-refbox/ssl-refbox.pro
 ssl-refbox/moc_*
 ssl-refbox/Makefile
 ssl-refbox/ui_GuiControls.h
+ssl-refbox/ui_GuiPropertiesDlg.h
 ConfigFile/example
 ConfigFile/tester
 *.pb.h
 *.pb.cc
+logs
 
 /doc

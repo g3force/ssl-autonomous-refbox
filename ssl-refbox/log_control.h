@@ -1,9 +1,18 @@
+/**
+ * @file log_control.h
+ * @brief Log_Control header file
+ */
 #ifndef LOG_CONTROL_H
 #define LOG_CONTROL_H
 
 #include <QObject>
 #include <iostream>
 
+/**
+ * @class Log_Control
+ * @brief Handle frames of log file and speed
+ * Has nothing to do with actual log file
+ */
 class Log_Control : public QObject
 {
     Q_OBJECT
@@ -22,6 +31,7 @@ public slots:
     void log_forward();
     void log_backward();
     void log_play();
+    void log_resume();
     void log_pause();
     void log_faster();
     void log_slower();
@@ -31,6 +41,7 @@ public slots:
 
 signals:
     void update_speed(QString);
+    void enable_log_frameNumber(bool);
 
 private:
     int current_frame;

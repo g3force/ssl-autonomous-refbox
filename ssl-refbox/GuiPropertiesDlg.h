@@ -2,9 +2,8 @@
 #define GUIPROPERTIESDLG_H
 
 #include <QtGui/QDialog>
-#include "ui_GuiPropertiesDlg.h"
-
 #include <string>
+#include "ui_GuiPropertiesDlg.h"
 #include "global.h"
 
 using std::string;

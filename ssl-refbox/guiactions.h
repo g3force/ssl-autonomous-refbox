@@ -1,4 +1,6 @@
 #include <QObject>
+#include <QStandardItemModel>
+#include "filter_data.h"
 namespace Ui { class GuiControls; }
 
 class GuiActions : public QObject
@@ -25,6 +27,13 @@ public slots:
     void update_frame(int);
     void slider_action(int);
     void change_show_rules(QString);
+    void gotoFrameInTextBox ();
+    void setLogFrameNumberEnabled(bool);
+    void force_update_frame ( int );
+    void log_frame_back();
+    void log_frame_forward();
+    void insert_into_lst_broken_rules(Broken_Rule*);
     void showPropertiesDlg();
 private:
+    QStandardItemModel *brokenRulesModel;
 };

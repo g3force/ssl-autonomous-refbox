@@ -42,8 +42,6 @@ public:
     Q_ALL = Q_I | Q_II | Q_III | Q_IV   //full  circle
     }; /* enum Quadrant */
 
-    static const std::string rulenames[42];
-
     GLExtra();
     GLExtra(Filter_Data*);
     ~GLExtra();
@@ -91,6 +89,8 @@ private:
     Robot_Sample_List robot_samples;
     //robot_models
     Robot_Sample_List robot_models;
+
+    long long cur_timestamp;
 
     void draw_robot(int, int, SSLRefbox::Colors::Color, double rotation = 0, int team = -1, int id = -1, bool last_touched = false);
 

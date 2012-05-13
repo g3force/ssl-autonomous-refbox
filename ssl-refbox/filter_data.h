@@ -18,6 +18,7 @@ struct Broken_Rule {
 	int defense_area; //-1 no, 0 left, 1 right
 	BSmart::Line line_for_smth;
 	BSmart::Int_Vector standing;
+	int frame_broken; // first frame where rule was broken
 };
 
 class Filter_Data {
