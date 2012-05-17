@@ -2,6 +2,7 @@
 #include <QMutex>
 #include <iostream>
 #include <SWI-Prolog.h>
+#include "global.h"
 #include <libbsmart/field.h>
 
 // log4cxx
@@ -62,28 +63,27 @@ void SSL_Refbox_Rules::run() {
 	predicate_t set_field = PL_predicate("define_field", 8, "field_definition");
 	PL_call_predicate(NULL, PL_Q_NORMAL, set_field, field_width);
 
-
 	/* Constants definitions */
-	term_t OpponentsBeforeKickOff 	= PL_new_term_refs(20);
-	term_t BallOtOufPlay 			= OpponentsBeforeKickOff + 1;
-	term_t OpponentAtDefArea 		= OpponentsBeforeKickOff + 2;
-	term_t BallNotEnterInTime 		= OpponentsBeforeKickOff + 3;
-	term_t BallNotEnterDist 		= OpponentsBeforeKickOff + 4;
-	term_t DribblingTooMuch 		= OpponentsBeforeKickOff + 5;
-	term_t BallTooHighIntoGoal 		= OpponentsBeforeKickOff + 6;
-	term_t BallSpeed 				= OpponentsBeforeKickOff + 7;
+	term_t OpponentsBeforeKickOff = PL_new_term_refs(20);
+	term_t BallOtOufPlay = OpponentsBeforeKickOff + 1;
+	term_t OpponentAtDefArea = OpponentsBeforeKickOff + 2;
+	term_t BallNotEnterInTime = OpponentsBeforeKickOff + 3;
+	term_t BallNotEnterDist = OpponentsBeforeKickOff + 4;
+	term_t DribblingTooMuch = OpponentsBeforeKickOff + 5;
+	term_t BallTooHighIntoGoal = OpponentsBeforeKickOff + 6;
+	term_t BallSpeed = OpponentsBeforeKickOff + 7;
 	term_t FreeKickInDefAreaFromGoal = OpponentsBeforeKickOff + 8;
 	term_t FreeKickInDefAreaFromTouch = OpponentsBeforeKickOff + 9;
-	term_t FreeKickInDefAreaAttack 	= OpponentsBeforeKickOff + 10;
-	term_t FreeKickOtherRob 		= OpponentsBeforeKickOff + 11;
-	term_t PenaltyKickOtherRob 		= OpponentsBeforeKickOff + 12;
-	term_t ThrowIn 					= OpponentsBeforeKickOff + 13;
-	term_t ThrowInOtherRob 			= OpponentsBeforeKickOff + 14;
-	term_t GoalKickFromLine 		= OpponentsBeforeKickOff + 15;
-	term_t GoalKickFromTouch 		= OpponentsBeforeKickOff + 16;
-	term_t GoalKickOppRob 			= OpponentsBeforeKickOff + 17;
-	term_t CornerKick 				= OpponentsBeforeKickOff + 18;
-	term_t CornerKickOppRob 		= OpponentsBeforeKickOff + 19;
+	term_t FreeKickInDefAreaAttack = OpponentsBeforeKickOff + 10;
+	term_t FreeKickOtherRob = OpponentsBeforeKickOff + 11;
+	term_t PenaltyKickOtherRob = OpponentsBeforeKickOff + 12;
+	term_t ThrowIn = OpponentsBeforeKickOff + 13;
+	term_t ThrowInOtherRob = OpponentsBeforeKickOff + 14;
+	term_t GoalKickFromLine = OpponentsBeforeKickOff + 15;
+	term_t GoalKickFromTouch = OpponentsBeforeKickOff + 16;
+	term_t GoalKickOppRob = OpponentsBeforeKickOff + 17;
+	term_t CornerKick = OpponentsBeforeKickOff + 18;
+	term_t CornerKickOppRob = OpponentsBeforeKickOff + 19;
 	result = PL_put_integer(OpponentsBeforeKickOff, 500);
 	result = PL_put_integer(BallOtOufPlay, 500);
 	result = PL_put_integer(OpponentAtDefArea, 200);

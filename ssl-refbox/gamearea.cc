@@ -39,7 +39,7 @@ Gamearea::Gamearea ( QWidget* p ) :
     rules->start();
 
     start_time = BSmart::Systemcall::get_current_system_time();
-    show_rule_data = false;
+    show_rule_data = true;
 }
 
 Gamearea::~Gamearea()

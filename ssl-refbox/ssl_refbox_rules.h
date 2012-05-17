@@ -23,6 +23,7 @@ public:
 
 signals:
     void new_filter_data();
+    void new_broken_rule(Broken_Rule*);
 
 private:
     char* argv_tmp[];
@@ -31,7 +32,7 @@ private:
     BSmart::Game_States* gamestate;
     BSmart::Game_States::Play_State play_state_old;
     int cur_frm;
-    int cur_timestamp;
+    BSmart::Time_Value cur_timestamp;
     BSmart::Int_Vector internal_play_states;
 
     char refbox_cmd_alt;

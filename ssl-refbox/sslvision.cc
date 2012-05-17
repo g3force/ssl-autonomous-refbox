@@ -94,6 +94,11 @@ SSLVision::~SSLVision() {
  */
 void SSLVision::run() {
 	LOG4CXX_DEBUG( logger, "run()");
+
+	if(Global::logFile != NULL) {
+		play_record(Global::logFile);
+	}
+
 	while (1) {
 		reset_transformed_percept(transformed_percept);
 		// see if new frame has been received
@@ -248,7 +253,7 @@ int SSLVision::execute(Transformed_Percept& trans_perc) {
 	int time_diff = standard_sleep_time;
 
 	// while a frame is received
-	while (recv(frame) && !play) {
+	while (!play && recv(frame)) {
 		//test camera_id
 		if (frame.camera_id() > 1) {
 			trans_perc.sleep_time = standard_sleep_time;
@@ -643,10 +648,10 @@ int SSLVision::end_record() {
 /**
  * @brief Play or stop play record according to global `play` variable
  */
-void SSLVision::play_record() {
+void SSLVision::play_record(QString logFile) {
 	if (!play) {
 		if (!rec) {
-			if (!start_play_record()) {
+			if (!start_play_record(logFile)) {
 				play = true;
 			}
 		}
@@ -659,22 +664,27 @@ void SSLVision::play_record() {
  * @brief Start play of a log file record
  * @return error code
  */
-int SSLVision::start_play_record() {
+int SSLVision::start_play_record(QString logFile) {
 	LOG4CXX_INFO( logger, "Start Play Record");
-	//change fileName into directory
-	if (fileName != QDir::homePath()) {
-		int last_slash = 0;
-		for (int i = 0; i < fileName.length(); i++) {
-			if (fileName.at(i).toAscii() == (QChar('/')))
-				last_slash = i;
-		}
-		fileName.remove(last_slash, fileName.length() - last_slash);
-	}
-
-	// What data shall I read?
-	fileName = QFileDialog::getOpenFileName((QWidget*) this->parent(), tr("Open Logfile"), fileName,
-			tr("Log Files (*.log)"));
 	std::ostringstream o;
+
+	if(logFile.isEmpty()) {
+		//change fileName into directory
+		if (fileName != QDir::homePath()) {
+			int last_slash = 0;
+			for (int i = 0; i < fileName.length(); i++) {
+				if (fileName.at(i).toAscii() == (QChar('/')))
+					last_slash = i;
+			}
+			fileName.remove(last_slash, fileName.length() - last_slash);
+		}
+
+		// What data shall I read?
+		fileName = QFileDialog::getOpenFileName((QWidget*) this->parent(), tr("Open Logfile"), fileName,
+				tr("Log Files (*.log)"));
+	} else {
+		fileName = logFile;
+	}
 	o << "fileName: " << fileName.toAscii().constData();
 	LOG4CXX_DEBUG( logger, o.str());
 

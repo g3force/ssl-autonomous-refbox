@@ -16,6 +16,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_START_MODE" value="run"/>
 <booleanAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN" value="true"/>
 <stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN_SYMBOL" value="main"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_ARGUMENTS" value="logs/robocup09/b-smart_er-force_full_game.log"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="bin/ssl-autonomous-refbox"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="ssl-autonomous-refbox"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
