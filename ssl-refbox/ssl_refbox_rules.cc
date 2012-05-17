@@ -263,16 +263,19 @@ void SSL_Refbox_Rules::run() {
 		// Load and save GUI-update for broken rules
 		broken_rule_vector.clear();
 		broken_rule_vector = filter_data->get_broken_rules();
-		for (std::vector<Broken_Rule>::iterator brit = broken_rule_vector.begin(); brit != broken_rule_vector.end();) {
-			if ((cur_timestamp - brit->when_broken) > 5000) {
-				std::ostringstream o;
-				o << cur_timestamp << " - " << brit->when_broken << " rule " << brit->rule_number << " removed";
-				LOG4CXX_DEBUG( logger, o.str());
-				broken_rule_vector.erase(brit);
-			} else {
-				brit++;
-			}
-		}
+        // vektor will not be cleared. All ever broken rules are contained in the vektor
+//        for ( std::vector<Broken_Rule>::iterator brit =
+//                    broken_rule_vector.begin(); brit != broken_rule_vector.end(); ) {
+//            if ( ( cur_timestamp - brit->when_broken ) > 5000 ) {
+//                std::ostringstream o;
+//                o << cur_timestamp << " - " << brit->when_broken
+//                << " rule " << brit->rule_number << " removed";
+//                LOG4CXX_DEBUG ( logger, o.str() );
+//                broken_rule_vector.erase ( brit );
+//            } else {
+//                brit++;
+//            }
+//        }
 		broken_rule_gui.rule_number = -42;
 
 		// Only check rules, if internal and external state is equal
@@ -308,8 +311,9 @@ void SSL_Refbox_Rules::run() {
 					last_break = rule;
 					last_msg = cur_frm;
 					std::ostringstream o;
-					o << cur_frm << " Rule " << rule << " broken by " << team << " | " << id;
-					LOG4CXX_DEBUG( logger, o.str());
+					o << cur_timestamp << " " << cur_frm << " Rule " << rule << " broken by "
+                    << team << " | " << id;
+                    LOG4CXX_DEBUG( logger, o.str());
 				}
 
 				// new broken rule
@@ -426,24 +430,37 @@ void SSL_Refbox_Rules::run() {
 		}
 
 		bool broken_rule_modified = false;
-		for (std::vector<Broken_Rule>::iterator brit = broken_rule_vector.begin(); brit != broken_rule_vector.end();
-				++brit) {
-			if (broken_rule_gui.rule_number == brit->rule_number) {
-				std::ostringstream o;
-				o << cur_timestamp << " Regel " << broken_rule_gui.rule_number << " überschrieben";
-				LOG4CXX_DEBUG( logger, o.str());
-				brit->when_broken = broken_rule_gui.when_broken;
-				brit->freekick_pos = broken_rule_gui.freekick_pos;
-				brit->rule_breaker = broken_rule_gui.rule_breaker;
-				brit->circle_around_ball = broken_rule_gui.circle_around_ball;
-				brit->defense_area = broken_rule_gui.defense_area;
-				brit->line_for_smth = broken_rule_gui.line_for_smth;
-				brit->standing = broken_rule_gui.standing;
-				broken_rule_modified = true;
+		for ( std::vector<Broken_Rule>::reverse_iterator brit =
+                    broken_rule_vector.rbegin(); brit != broken_rule_vector.rend(); ++brit ) {
+        	if ((cur_timestamp - brit->when_broken) > 5000) {
+				break;
 			}
-		}
+            if ( broken_rule_gui.rule_number == brit->rule_number ) {
+//                std::ostringstream o;
+//                o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
+//                " overridden";
+//                LOG4CXX_DEBUG ( logger, o.str() );
+                brit->when_broken = broken_rule_gui.when_broken;
+                brit->freekick_pos = broken_rule_gui.freekick_pos;
+                brit->rule_breaker = broken_rule_gui.rule_breaker;
+                brit->circle_around_ball = broken_rule_gui.circle_around_ball;
+                brit->defense_area = broken_rule_gui.defense_area;
+                brit->line_for_smth = broken_rule_gui.line_for_smth;
+                brit->standing = broken_rule_gui.standing;
+                broken_rule_modified = true;
+            }
+        }
 		if (!broken_rule_modified && broken_rule_gui.rule_number != -42) {
 			broken_rule_vector.push_back(broken_rule_gui);
+			std::ostringstream o;
+			o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
+			" broken" << "Broken rules: " << broken_rule_vector.size();
+			LOG4CXX_DEBUG ( logger, o.str() );
+			if(broken_rule_gui.rule_number > 0 && broken_rule_gui.rule_number <= 42) {
+				emit new_broken_rule(&broken_rule_gui);
+			} else {
+				LOG4CXX_WARN ( logger, "Invalid rule number" );
+			}
 		}
 		filter_data->set_broken_rules(broken_rule_vector);
 
