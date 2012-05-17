@@ -19,37 +19,35 @@ LoggerPtr GLExtra::logger(Logger::getLogger("GLExtra"));
 /**
  * @brief Initialize GLExtra
  */
-GLExtra::GLExtra()
-{
+GLExtra::GLExtra() {
 	current_ball_percepts.clear();
-    ball_samples.clear();
-    ball_model = Ball_Sample();
-    tmp_perc_robots.clear();
-    current_robot_percepts.clear();
-    tmp_sample_robots.clear();
-    robot_samples.clear();
-    robot_models.clear();
-    broken_rule_vector.clear();
+	ball_samples.clear();
+	ball_model = Ball_Sample();
+	tmp_perc_robots.clear();
+	current_robot_percepts.clear();
+	tmp_sample_robots.clear();
+	robot_samples.clear();
+	robot_models.clear();
+	broken_rule_vector.clear();
 }
 
 /**
  * @brief Initialize GLExtra
  * @param filter_data_
  */
-GLExtra::GLExtra ( Filter_Data* filter_data_ )
-{
-    filter_data = filter_data_;
-    current_ball_percepts.clear();
-    ball_samples.clear();
-    ball_model = Ball_Sample();
-    tmp_perc_robots.clear();
-    current_robot_percepts.clear();
-    tmp_sample_robots.clear();
-    robot_samples.clear();
-    robot_models.clear();
-    broken_rule_vector.clear();
-    internal_play_states = BSmart::Int_Vector ( 0, 0 );
-    gamestate = new BSmart::Game_States;
+GLExtra::GLExtra(Filter_Data* filter_data_) {
+	filter_data = filter_data_;
+	current_ball_percepts.clear();
+	ball_samples.clear();
+	ball_model = Ball_Sample();
+	tmp_perc_robots.clear();
+	current_robot_percepts.clear();
+	tmp_sample_robots.clear();
+	robot_samples.clear();
+	robot_models.clear();
+	broken_rule_vector.clear();
+	internal_play_states = BSmart::Int_Vector(0, 0);
+	gamestate = new BSmart::Game_States;
 }
 
 GLExtra::~GLExtra() {
@@ -206,27 +204,25 @@ void GLExtra::draw_goal() {
  * @brief Draw marks of field (goal, penalty mark, center mark)
  * NOTE keep in sync with field.h
  */
-void GLExtra::draw_marks()
-{
-    static const float pt = ( BSmart::Field::half_field_width
-                              - BSmart::Field::penalty_mark_distance );
-    bglBresCircle ( BSmart::Field::center_radius ); //Center circle
-    glColor3f ( 1, 0, 0 ); //Center mark color
-    bglPoint ( 0, 0, 20 ); //center mark
+void GLExtra::draw_marks() {
+	static const float pt = (BSmart::Field::half_field_width - BSmart::Field::penalty_mark_distance);
+	bglBresCircle(BSmart::Field::center_radius); //Center circle
+	glColor3f(1, 0, 0); //Center mark color
+	bglPoint(0, 0, 20); //center mark
 
-    glColor3f ( 0.0, 0.3, 1.0 ); //right team color
-    bglPoint ( pt, 0, 20 ); //right penalty mark
-    draw_goal(); //right goal
+	glColor3f(0.0, 0.3, 1.0); //right team color
+	bglPoint(pt, 0, 20); //right penalty mark
+	draw_goal(); //right goal
 
-    glColor3f ( 1.0, 1.0, 0.0 ); //left team color
+	glColor3f(1.0, 1.0, 0.0); //left team color
 
-    glPushMatrix();
-    {
-        glScalef ( -1.0, -1.0, 0.0 ); //mirror
-        bglPoint ( pt, 0, 20 ); //left penalty mark
-        draw_goal(); //right goal
-    }
-    glPopMatrix();
+	glPushMatrix();
+	{
+		glScalef(-1.0, -1.0, 0.0); //mirror
+		bglPoint(pt, 0, 20); //left penalty mark
+		draw_goal(); //right goal
+	}
+	glPopMatrix();
 }
 
 /**
@@ -257,15 +253,35 @@ void GLExtra::bglDrawFilterData() {
 
 	//draw data
 	//current robot percepts
+	/*
+	 * Ein Percept ist die gemessene Position, also die Position die von
+	 * der SSL-Vision kommt. Optimalerweise gibt es ein Percept pro Roboter
+	 * und Ball pro Frame.
+	 */
 	for (Robot_Percept_List::iterator it = current_robot_percepts.begin(); it != current_robot_percepts.end(); it++) {
-		double rotation = 0;
-		if (it->rotation_known)
+		double rotation = 0.0;
+		if (it->rotation_known) {
 			rotation = it->rotation;
+		}
+//		printf("p ",rotation);
 		draw_robot(it->x, it->y, it->color, rotation, -1, -1, false);
-
 	}
 
 	//robot samples
+	/*
+	 * Ein Sample ist eine von vielen (afair 100 in der refbox) Hypothesen,
+die der Particle Filter über die Roboterposition aufstellt. Zu jedem
+Roboter und für den Ball gibt es eine eigene Partikelmenge (jaja,
+schönes deutsch-Englisch-Gemisch :) ). Die Particle werden nach
+"physikalischen" Kriterien bewegt und anschließend über die Messung
+(das Percept) gewichtet. Anschließend werden aus der gewichteten Menge
+die "guten" Particle beibehalten und die "schlechten" entfernt.
+Particle können im Gegensatz zu den Percepten eine Geschwindigkeit
+haben. Dadurch, dass die Particle auch weiter bewegt werden, wenn der
+Gegenstand ein paar Frames nicht gesehen wird (kein Percept), kann die
+ungefähre Position auch in den folgenden Frames geschätzt werden.
+Durch höhere Streuung wegen fehlender Gewichtung natürlich ungenauer.
+	 */
 	for (Robot_Sample_List::iterator it = robot_samples.begin(); it != robot_samples.end(); it++) {
 		draw_robot(it->pos.x, it->pos.y, SSLRefbox::Colors::WHITE, it->pos.rotation, -1, -1, false);
 		LOG4CXX_DEBUG(logger,
@@ -273,12 +289,19 @@ void GLExtra::bglDrawFilterData() {
 	}
 
 	//robot models
+	/*
+	 *  Das Model ist die aktuell vom Particle Filter geschätzte Position.
+Es wird aus der Partikelmenge extrahiert und hat dann ebenso wie die
+Particle eine Position, eine Geschwindigkeit und eine
+Kollisionsinformation. Dieses Model wird dann im Folgenden für die
+Regelüberprüfungen verwendet, pro Objekt gibt es nur ein Model.
+	 */
 	bool last_touched;
 	glLineWidth(2);
 	for (Robot_Sample_List::iterator it = robot_models.begin(); it != robot_models.end(); it++) {
 		last_touched = ((it->team == ball_model.last_touched_robot.x) && (it->id == ball_model.last_touched_robot.y));
+//		printf("m ",it->pos.rotation);
 		draw_robot(it->pos.x, it->pos.y, SSLRefbox::Colors::RED, it->pos.rotation, it->team, it->id, last_touched);
-		//        draw_robot(it->pos.x, it->pos.y, SSLRefbox::Colors::RED, quadric, it->id, false);
 	}
 	glLineWidth(1);
 
@@ -355,6 +378,10 @@ void GLExtra::draw_robot(int x, int y, SSLRefbox::Colors::Color color, double ro
 	}
 
 	double f = rotation;
+//	if (abs(f) > 7) {
+//		printf("%f aaaaaaaaa\n", f);
+//	} else
+//		printf("%f\n", f);
 	for (int i = 0; i <= 12; ++i) {
 		glVertex3d(cos(f) * BSmart::Field::robot_radius, sin(f) * BSmart::Field::robot_radius, 0);
 		f = f + (2 * BSmart::pi / 12);
@@ -498,8 +525,8 @@ void GLExtra::bglDrawRulesystemData() {
 	int rule_counter = 0;
 	glLineWidth(2);
 
-	for ( std::vector<Broken_Rule>::reverse_iterator brit = broken_rule_vector.rbegin(); brit
-            != broken_rule_vector.rend(); ++brit ) {
+	for (std::vector<Broken_Rule>::reverse_iterator brit = broken_rule_vector.rbegin();
+			brit != broken_rule_vector.rend(); ++brit) {
 		if ((cur_timestamp - brit->when_broken) > 5000) {
 			break;
 		}

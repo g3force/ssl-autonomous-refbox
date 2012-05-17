@@ -262,6 +262,15 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 }
 
 void GuiActions::brokenRuleRowSelected(QModelIndex index) {
+	/* 1. save log file??
+	 * 2. play
+	 * 3. jump
+	 * 4. timer or just play until end or wait for stop button
+	 * 5. manage recording in the meantime
+	 */
+
+//	m_gui->gamearea->vision->play_record(logFile);
+
 	int frame = brokenRulesModel->data(brokenRulesModel->index(index.row(), 4)).toInt();
 	frame -= 100;
 	if(frame < 0) frame = 0;
