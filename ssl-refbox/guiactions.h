@@ -34,6 +34,7 @@ public slots:
     void log_frame_forward();
     void insert_into_lst_broken_rules(Broken_Rule*);
     void showPropertiesDlg();
+    void brokenRuleRowSelected(QModelIndex);
 private:
     QStandardItemModel *brokenRulesModel;
 };

@@ -2,6 +2,8 @@
 #include "pose.h"
 #include "math.h" // used for pi
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 
 namespace BSmart
 {
