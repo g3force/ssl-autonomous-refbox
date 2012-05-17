@@ -28,7 +28,7 @@ install:
 	mkdir -p ${DESTDIR}/usr/bin/
 	cp bin/ssl-autonomous-refbox ${DESTDIR}/usr/bin/
 	mkdir -p ${DESTDIR}/etc/
-	if [ ! -f "${DESTDIR}/etc/ssl-autonomous-refbox.conf" ]; then cp bin/ssl-autonomous-refbox.conf ${DESTDIR}/etc/; fi
+	if [ ! -f "${DESTDIR}/etc/ssl-autonomous-refbox.conf" ] && [ -f "ssl-autonomous-refbox.conf" ]; then cp ssl-autonomous-refbox.conf ${DESTDIR}/etc/; fi
 
 doxygen:
 	doxygen doxygen.conf
