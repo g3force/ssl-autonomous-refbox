@@ -669,14 +669,20 @@ int SSLVision::start_play_record(QString logFile) {
 	std::ostringstream o;
 
 	if(logFile.isEmpty()) {
-		//change fileName into directory
-		if (fileName != QDir::homePath()) {
-			int last_slash = 0;
-			for (int i = 0; i < fileName.length(); i++) {
-				if (fileName.at(i).toAscii() == (QChar('/')))
-					last_slash = i;
+		if( Global::config.keyExists("log_file") ) {
+			string file;
+			Global::config.readInto(file, "log_file");
+			fileName = QString::fromStdString( file );;
+		} else {
+			//change fileName into directory
+			if (fileName != QDir::homePath()) {
+				int last_slash = 0;
+				for (int i = 0; i < fileName.length(); i++) {
+					if (fileName.at(i).toAscii() == (QChar('/')))
+						last_slash = i;
+				}
+				fileName.remove(last_slash, fileName.length() - last_slash);
 			}
-			fileName.remove(last_slash, fileName.length() - last_slash);
 		}
 
 		// What data shall I read?
@@ -703,6 +709,10 @@ int SSLVision::start_play_record(QString logFile) {
 	}
 
 	LOG4CXX_INFO( logger, "File successfully loaded");
+
+	Global::config.add("log_file", fileName.toStdString() );
+	Global::saveConfig();
+
 	if (logs.IsInitialized() && logs.log_size() > 0 && logs.log(0).IsInitialized()) {
 		o.str("");
 		o << "Size of logfile: " << logs.log_size();
