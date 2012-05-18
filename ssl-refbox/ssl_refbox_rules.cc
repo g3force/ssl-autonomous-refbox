@@ -347,6 +347,7 @@ void SSL_Refbox_Rules::run() {
 
 					broken_rule_gui.rule_number = rule;
 					broken_rule_gui.when_broken = cur_timestamp;
+					broken_rule_gui.frame_broken = cur_frm;
 					broken_rule_gui.freekick_pos = BSmart::Int_Vector(-1, -1);
 					broken_rule_gui.rule_breaker = BSmart::Int_Vector(-1, -1);
 					broken_rule_gui.circle_around_ball = false;
