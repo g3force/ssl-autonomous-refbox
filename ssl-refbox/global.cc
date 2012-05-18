@@ -83,20 +83,18 @@ const std::string Global::rulenames[42] = { "Robot Number exceeded", //1
  * @param custConfig custom config file to try first
  */
 void Global::loadConfig(string custConfig) {
-	string configFile;
 	if (custConfig.empty()) {
-		configFile = getConfigPath();
+		setConfigPath();
 	} else {
-		configFile = custConfig;
 		configFilePath = custConfig;
 	}
 
-	std::ifstream in(configFile.c_str());
+	std::ifstream in(configFilePath.c_str());
 	if (in) {
 		in >> Global::config;
-		LOG4CXX_INFO( logger42, "ConfigFile " + configFile + " loaded.");
+		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " loaded.");
 	} else {
-		LOG4CXX_DEBUG( logger42, "ConfigFile " + configFile + " not found.");
+		LOG4CXX_DEBUG( logger42, "ConfigFile " + configFilePath + " not found.");
 	}
 }
 
@@ -113,44 +111,43 @@ void Global::saveConfig() {
 }
 
 /**
- * @brief Locate config file and return it
- * Tries to locate the config file from following order:
- * 1. In the current folder
- * 2. In the users home folder (/home/user/.ssl-autonomous-refbox/)
- * 3. In /etc/
+ * @brief set config path, if there no config a new config file will be created
  * The config file has to be called ssl-autonomous-refbox.conf
  */
-string Global::getConfigPath() {
+void Global::setConfigPath() {
 	string configFile = "ssl-autonomous-refbox.conf";
+
 	string home = getenv("HOME");
 	if (home.empty()) {
 		home = "/root";
 	}
 
+	configFilePath = home + "/.ssl-autonomous-refbox/" + configFile;
 
-	string configPath[] =
-			{ configFile, home + "/.ssl-autonomous-refbox/" + configFile, "/etc/" + configFile };
-	// save path (we cant save to /etc and we do not want to save to configFile)
-	configFilePath = configPath[1];
-
-	for (int i = 0; i < 3; i++) {
-		std::ifstream in(configPath[i].c_str());
-		if (in) {
-			in.close();
-			LOG4CXX_INFO( logger42, "ConfigFile " + configPath[i] + " found.");
-			return configPath[i];
-		}
+	std::ifstream in(configFilePath.c_str());
+	if (in) {
+		in.close();
+		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " found.");
+	} else {
+		LOG4CXX_INFO( logger42, "No ConfigFile found.");
+		createDefaultConfigFile(configFilePath);
 	}
-	LOG4CXX_INFO( logger42, "No ConfigFile found.");
-
-	createDefaultConfigFile(configPath[1]);
-	return configPath[1];
 }
 
 /**
  * TODO create a config file with default values
  */
 void Global::createDefaultConfigFile(string path) {
+	config.add("ssl_vision_ip", "224.5.23.2");
+	config.add("ssl_vision_port", "10002	");
+
+	config.add("refbox_ip", "224.5.23.1");
+	config.add("refbox_port", "10001");
+
+	config.add("cam_height", "580");
+	config.add("cam_width", "780");
+
+	saveConfig();
 	LOG4CXX_INFO( logger42, "Default ConfigFile " + path + " created.");
 }
 
