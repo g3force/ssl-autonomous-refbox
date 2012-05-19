@@ -33,7 +33,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/consoleappender.h>
-#include <log4cxx/fileappender.h>
+#include <log4cxx/rollingfileappender.h>
 
 #include "global.h"
 
@@ -89,7 +89,8 @@ int main(int argc, char* argv[]) {
 		LayoutPtr layout(new PatternLayout("\%6r \%-5p \%-16c{1} \%-50m \%n"));
 		// create a file and console appender, so that all log events
 		// will be sent to the logfile and to the std output
-		FileAppender * fileAppender = new FileAppender(layout, logfile, false);
+		RollingFileAppender * fileAppender = new RollingFileAppender(layout, logfile, true);
+		fileAppender->fileLength = 500000; // size_t equal to num in malloc etc. => byte
 		ConsoleAppender * consoleAppender = new ConsoleAppender(layout);
 
 		// From log4cxx doc:
@@ -130,6 +131,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	LOG4CXX_INFO(logger, "");
 	LOG4CXX_INFO(logger, "Entering application.");
 
 	// load the config file. Settings are stored publicly
