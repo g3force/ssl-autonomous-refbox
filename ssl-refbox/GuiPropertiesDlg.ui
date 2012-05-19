@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>GuiPropertiesDlg</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QPushButton" name="saveBtn">
    <property name="geometry">
     <rect>
