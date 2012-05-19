@@ -688,6 +688,9 @@ int SSLVision::start_play_record(QString logFile) {
 		// What data shall I read?
 		fileName = QFileDialog::getOpenFileName((QWidget*) this->parent(), tr("Open Logfile"), fileName,
 				tr("Log Files (*.log)"));
+
+		Global::config.add("log_file", fileName.toStdString() );
+		Global::saveConfig();
 	} else {
 		fileName = logFile;
 	}
@@ -709,9 +712,6 @@ int SSLVision::start_play_record(QString logFile) {
 	}
 
 	LOG4CXX_INFO( logger, "File successfully loaded");
-
-	Global::config.add("log_file", fileName.toStdString() );
-	Global::saveConfig();
 
 	if (logs.IsInitialized() && logs.log_size() > 0 && logs.log(0).IsInitialized()) {
 		o.str("");
