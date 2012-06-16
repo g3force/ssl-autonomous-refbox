@@ -43,7 +43,8 @@ public:
 	void move_balls(double, const Robot_Sample_List&);
 
 	//Robots
-	void set_robot_samples(int, int, const Robot_Sample_List&);
+//	void set_robot_samples(int, int, const Robot_Sample_List&);
+	void set_robot_samples(int, int, Robot_Sample_List&);
 	Robot_Sample_List get_robot_samples(int, int);
 	void set_robot_model(int, int, const Robot_Sample&);
 	Robot_Sample get_robot_model(int, int);

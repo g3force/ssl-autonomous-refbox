@@ -345,14 +345,15 @@ void SSL_Refbox_Rules::run() {
                                         BSmart::Int_Vector freekick_pos(x_tmp, y_tmp);
                                         result = PL_get_integer(left_team, &left);
 
-                                        broken_rule_gui.rule_number = rule;
-                                        broken_rule_gui.when_broken = cur_timestamp;
-                                        broken_rule_gui.freekick_pos = BSmart::Int_Vector(-1, -1);
-                                        broken_rule_gui.rule_breaker = BSmart::Int_Vector(-1, -1);
-                                        broken_rule_gui.circle_around_ball = false;
-                                        broken_rule_gui.defense_area = -1;
-                                        broken_rule_gui.line_for_smth = BSmart::Line(-1., -1., -1., -1.);
-                                        broken_rule_gui.standing = BSmart::Int_Vector(-1, -1);
+					broken_rule_gui.rule_number = rule;
+					broken_rule_gui.when_broken = cur_timestamp;
+					broken_rule_gui.frame_broken = cur_frm;
+					broken_rule_gui.freekick_pos = BSmart::Int_Vector(-1, -1);
+					broken_rule_gui.rule_breaker = BSmart::Int_Vector(-1, -1);
+					broken_rule_gui.circle_around_ball = false;
+					broken_rule_gui.defense_area = -1;
+					broken_rule_gui.line_for_smth = BSmart::Line(-1., -1., -1., -1.);
+					broken_rule_gui.standing = BSmart::Int_Vector(-1, -1);
 
                                         switch (rule) {
                                         case 1:
