@@ -7,6 +7,7 @@
 #include <QWaitCondition>
 #include <algorithm>
 #include <stdio.h>
+#include <assert.h>
 
 Particle_Filter_Mother::Particle_Filter_Mother(Pre_Filter_Data* pf_data_, Filter_Data* filter_data_,
 		QWaitCondition* rules_wait_condition_, QWaitCondition* new_data_wait_condition_) :
@@ -225,6 +226,7 @@ bool Particle_Filter::weight_ball(Ball_Percept& perc) {
 
 bool Particle_Filter::weight_robot(Robot_Percept& perc, int team, int id) {
 	bool percept_used = false;
+	assert(perc.rotation < 7 && perc.rotation > -7);
 	BSmart::Pose percept(perc.x, perc.y, perc.rotation);
 	Robot_Sample_List samples = filter_data->get_robot_samples(team, id);
 
@@ -373,6 +375,7 @@ void Particle_Filter::resample() {
 
 					if (random < augment) { // insert new samples
 						int robot_percept = random_number(0, (num_robots - 1));
+						assert(robots[robot_percept].rotation < 7.0 && robots[robot_percept].rotation > -7.0);
 						augment_robot.pos = BSmart::Pose(robots[robot_percept].x, robots[robot_percept].y,
 								robots[robot_percept].rotation);
 

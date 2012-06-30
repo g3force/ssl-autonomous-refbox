@@ -12,6 +12,7 @@
 #include <libbsmart/math.h>
 #include "glextra.h"
 #include "global.h"
+#include <assert.h>
 
 using namespace log4cxx;
 LoggerPtr GLExtra::logger(Logger::getLogger("GLExtra"));
@@ -263,7 +264,7 @@ void GLExtra::bglDrawFilterData() {
 		if (it->rotation_known) {
 			rotation = it->rotation;
 		}
-//		printf("p ",rotation);
+		assert(rotation < 7 && rotation > -7);
 		draw_robot(it->x, it->y, it->color, rotation, -1, -1, false);
 	}
 

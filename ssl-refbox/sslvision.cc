@@ -95,7 +95,7 @@ SSLVision::~SSLVision() {
 void SSLVision::run() {
 	LOG4CXX_DEBUG( logger, "run()");
 
-	if(Global::logFile != NULL) {
+	if (Global::logFile != NULL) {
 		play_record(Global::logFile);
 	}
 
@@ -426,13 +426,12 @@ void SSLVision::process(Transformed_Percept& trans_perc, char color) {
 		 * It seems, that it expects the origin of coordinates not in the
 		 * middle of the field and thus are not negative...
 		 * Anyway, without this code, everything runs fine :)
+		 * FIXME currently it works ^^
 		 */
-//		if ( (robot.pixel_y() + robot_r > cam_height)
-//		|| (robot.pixel_y() - robot_r < 0)
-//		|| (robot.pixel_x() + robot_r > cam_width)
-//		|| (robot.pixel_x() - robot_r < 0) ) {
-//		continue;
-//		}
+		if ((robot.pixel_y() + robot_r > cam_height) || (robot.pixel_y() - robot_r < 0)
+				|| (robot.pixel_x() + robot_r > cam_width) || (robot.pixel_x() - robot_r < 0)) {
+			continue;
+		}
 
 		Robot_Percept pRobot;
 		pRobot.x = robot.x();
@@ -442,7 +441,9 @@ void SSLVision::process(Transformed_Percept& trans_perc, char color) {
 		pRobot.rotation_known = robot.has_orientation();
 		if (pRobot.rotation_known) {
 			pRobot.rotation = robot.orientation();
-			//LOG4CXX_DEBUG(logger, pRobot.rotation);
+//			LOG4CXX_DEBUG(logger, pRobot.rotation);
+		} else {
+			pRobot.rotation = 0;
 		}
 
 		pRobot.confidence = robot.confidence() * 100;
@@ -668,11 +669,12 @@ int SSLVision::start_play_record(QString logFile) {
 	LOG4CXX_INFO( logger, "Start Play Record");
 	std::ostringstream o;
 
-	if(logFile.isEmpty()) {
-		if( Global::config.keyExists("log_file") ) {
+	if (logFile.isEmpty()) {
+		if (Global::config.keyExists("log_file")) {
 			string file;
 			Global::config.readInto(file, "log_file");
-			fileName = QString::fromStdString( file );;
+			fileName = QString::fromStdString(file);
+			;
 		} else {
 			//change fileName into directory
 			if (fileName != QDir::homePath()) {
@@ -710,7 +712,7 @@ int SSLVision::start_play_record(QString logFile) {
 
 	LOG4CXX_INFO( logger, "File successfully loaded");
 
-	Global::config.add("log_file", fileName.toStdString() );
+	Global::config.add("log_file", fileName.toStdString());
 	Global::saveConfig();
 
 	if (logs.IsInitialized() && logs.log_size() > 0 && logs.log(0).IsInitialized()) {
