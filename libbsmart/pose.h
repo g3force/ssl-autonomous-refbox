@@ -11,7 +11,7 @@ namespace BSmart
     {
         public:
 
-        /** Rotation as an angle*/
+        /** Rotation as an angle in radiant */
         double rotation;
 
         /**

@@ -13,7 +13,12 @@
 
 GuiActions::GuiActions(Ui::GuiControls* gui, QObject* win) :
 		QObject(win), m_gui(gui) {
-	brokenRulesModel = new QStandardItemModel();
+	brokenRulesModel = new QStandardItemModel(0, 5);
+	brokenRulesModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Time")));
+	brokenRulesModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Rulename")));
+	brokenRulesModel->setHorizontalHeaderItem(2, new QStandardItem(QString("Team")));
+	brokenRulesModel->setHorizontalHeaderItem(3, new QStandardItem(QString("Bot")));
+	brokenRulesModel->setHorizontalHeaderItem(4, new QStandardItem(QString("Frame")));
 }
 
 GuiActions::~GuiActions() {
@@ -84,6 +89,8 @@ void GuiActions::connectActions() {
 	// broken rules
 	connect(m_gui->gamearea->rules, SIGNAL ( new_broken_rule( Broken_Rule* ) ), this,
 			SLOT ( insert_into_lst_broken_rules( Broken_Rule* ) ));
+	connect(m_gui->tbl_brokenRules, SIGNAL ( clicked ( QModelIndex ) ), this,
+			SLOT ( brokenRuleRowSelected( QModelIndex ) ));
 }
 
 void GuiActions::fullscreen(bool f) {
@@ -182,7 +189,6 @@ void GuiActions::gotoFrameInTextBox() {
 	bool suc = 0;
 	int frame = frameStr.toInt(&suc, 10);
 //	if(m_gui->gamearea->vision->log_control->get_play_speed()==0.0 && suc) {
-	printf("gotoFrame %d\n", frame);
 	emit goto_frame(frame);
 	force_update_frame(m_gui->gamearea->vision->log_control->get_current_frame());
 //	}
@@ -209,6 +215,7 @@ void GuiActions::log_frame_forward() {
 void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 	if (m_gui->tbl_brokenRules->model() == NULL) {
 		m_gui->tbl_brokenRules->setModel(brokenRulesModel);
+//		m_gui->tbl_brokenRules->setColumnHidden(4, true);
 	}
 	if (brokenRule != NULL && brokenRule->rule_number >= 0) {
 		QString rulename = Global::rulenames[brokenRule->rule_number - 1].c_str();
@@ -220,11 +227,8 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 		timestamp /= 1000;
 		timeinfo = localtime((time_t*) &timestamp);
 		const char* time = ctime((const time_t*) &timestamp);
-		QStandardItem *itmRuleno = new QStandardItem(time);
-//		std::ostringstream whenBroken;
-//		whenBroken << static_cast<long long>(brokenRule->when_broken);
-//		QStandardItem *itmRuleno = new QStandardItem(whenBroken.str().c_str());
-		row->append(itmRuleno);
+		QStandardItem *itmTimeBroken = new QStandardItem(time);
+		row->append(itmTimeBroken);
 
 		// rule
 		QStandardItem *itmRulename = new QStandardItem(rulename);
@@ -232,7 +236,11 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 
 		// team
 		std::ostringstream team;
-		team << brokenRule->rule_breaker.x;
+		if (brokenRule->rule_breaker.x == 0) {
+			team << "yellow";
+		} else {
+			team << "blue";
+		}
 		QStandardItem *itmTeam = new QStandardItem(team.str().c_str());
 		row->append(itmTeam);
 
@@ -241,8 +249,33 @@ void GuiActions::insert_into_lst_broken_rules(Broken_Rule *brokenRule) {
 		ruleBreaker << brokenRule->rule_breaker.y;
 		QStandardItem *itmRulebreaker = new QStandardItem(ruleBreaker.str().c_str());
 		row->append(itmRulebreaker);
+
+		// frame
+		std::ostringstream frame;
+		frame << brokenRule->frame_broken;
+		QStandardItem *itmFrame = new QStandardItem(frame.str().c_str());
+		row->append(itmFrame);
+
+		// insert
 		brokenRulesModel->insertRow(0, *row);
 	}
+}
+
+void GuiActions::brokenRuleRowSelected(QModelIndex index) {
+	/* 1. save log file??
+	 * 2. play
+	 * 3. jump
+	 * 4. timer or just play until end or wait for stop button
+	 * 5. manage recording in the meantime
+	 */
+
+//	m_gui->gamearea->vision->play_record(logFile);
+
+	int frame = brokenRulesModel->data(brokenRulesModel->index(index.row(), 4)).toInt();
+	frame -= 100;
+	if(frame < 0) frame = 0;
+	emit goto_frame(frame);
+	force_update_frame(m_gui->gamearea->vision->log_control->get_current_frame());
 }
 
 void GuiActions::showPropertiesDlg() {

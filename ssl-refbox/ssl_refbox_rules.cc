@@ -63,6 +63,51 @@ void SSL_Refbox_Rules::run() {
 	predicate_t set_field = PL_predicate("define_field", 8, "field_definition");
 	PL_call_predicate(NULL, PL_Q_NORMAL, set_field, field_width);
 
+	/* Constants definitions */
+	term_t opponentsBeforeKickOff = PL_new_term_refs(20);
+	term_t ballOtOufPlay = opponentsBeforeKickOff + 1;
+	term_t opponentAtDefArea = opponentsBeforeKickOff + 2;
+	term_t ballNotEnterInTime = opponentsBeforeKickOff + 3;
+	term_t ballNotEnterDist = opponentsBeforeKickOff + 4;
+	term_t dribblingTooMuch = opponentsBeforeKickOff + 5;
+	term_t ballTooHighIntoGoal = opponentsBeforeKickOff + 6;
+	term_t ballSpeed = opponentsBeforeKickOff + 7;
+	term_t freeKickInDefAreaFromGoal = opponentsBeforeKickOff + 8;
+	term_t freeKickInDefAreaFromTouch = opponentsBeforeKickOff + 9;
+	term_t freeKickInDefAreaAttack = opponentsBeforeKickOff + 10;
+	term_t freeKickOtherRob = opponentsBeforeKickOff + 11;
+	term_t penaltyKickOtherRob = opponentsBeforeKickOff + 12;
+	term_t throwIn = opponentsBeforeKickOff + 13;
+	term_t throwInOtherRob = opponentsBeforeKickOff + 14;
+	term_t goalKickFromLine = opponentsBeforeKickOff + 15;
+	term_t goalKickFromTouch = opponentsBeforeKickOff + 16;
+	term_t goalKickOppRob = opponentsBeforeKickOff + 17;
+	term_t cornerKick = opponentsBeforeKickOff + 18;
+	term_t cornerKickOppRob = opponentsBeforeKickOff + 19;
+	result = PL_put_integer(opponentsBeforeKickOff, 500);
+	result = PL_put_integer(ballOtOufPlay, 500);
+	result = PL_put_integer(opponentAtDefArea, 200);
+	result = PL_put_integer(ballNotEnterInTime, 10);
+	result = PL_put_integer(ballNotEnterDist, 500);
+	result = PL_put_integer(dribblingTooMuch, 500);
+	result = PL_put_integer(ballTooHighIntoGoal, 150);
+	result = PL_put_integer(ballSpeed, 8);
+	result = PL_put_integer(freeKickInDefAreaFromGoal, 600);
+	result = PL_put_integer(freeKickInDefAreaFromTouch, 100);
+	result = PL_put_integer(freeKickInDefAreaAttack, 700);
+	result = PL_put_integer(freeKickOtherRob, 500);
+	result = PL_put_integer(penaltyKickOtherRob, 400);
+	result = PL_put_integer(throwIn, 100);
+	result = PL_put_integer(throwInOtherRob, 500);
+	result = PL_put_integer(goalKickFromLine, 500);
+	result = PL_put_integer(goalKickFromTouch, 100);
+	result = PL_put_integer(goalKickOppRob, 500);
+	result = PL_put_integer(cornerKick, 100);
+	result = PL_put_integer(cornerKickOppRob, 500);
+
+	predicate_t set_constants = PL_predicate("define_constants", 20, "constants_def");
+	PL_call_predicate(NULL, PL_Q_NORMAL, set_constants, opponentsBeforeKickOff);
+
 	/* Game initialization, Preparing variables */
 
 	predicate_t game_init = PL_predicate("game_init", 0, "Game initialization");
@@ -124,33 +169,25 @@ void SSL_Refbox_Rules::run() {
 
 	// rule_zero: Only check rules, if internal and external state equal
 	predicate_t rule_zero = PL_predicate("rule_zero", 0, "game states equal"); //"Spielzustaende gleich");
-
 	// test_info
 	predicate_t get_local_play_state = PL_predicate("get_local_play_state", 1, "get_local_play_state");
 	predicate_t get_local_next_play_state = PL_predicate("get_local_next_play_state", 1, "get_local_next_play_state");
-
 	predicate_t get_left = PL_predicate("get_left", 1, "get_left_team");
 	predicate_t get_freekick_pos = PL_predicate("get_freekick_pos", 3, "get_freekick_pos");
 	predicate_t get_rule_breaker = PL_predicate("get_rule_breaker", 2, "Robot which breaks a rule");
-
 	predicate_t get_standing = PL_predicate("get_standing", 2, "Result"); //"Ergebnis");
-
 	// Drawing of messages for broken rules on GUI
 	Broken_Rule broken_rule_gui;
 	std::vector<Broken_Rule> broken_rule_vector;
-
 	QMutex rules_mutex;
 	for (;;) {
-
 		rules_mutex.lock();
 		rules_wait_condition->wait(&rules_mutex);
-
 		// Timestamp
 		cur_timestamp = filter_data->get_timestamp();
 		result = PL_put_integer(timestamp, cur_timestamp);
 		PL_call_predicate(NULL, PL_Q_NORMAL, set_timestamp, timestamp);
 		cur_frm = filter_data->get_frame();
-
 		// Playstate
 		play_state_tmp = gamestate->get_play_state();
 		result = PL_put_integer(global_play_state, play_state_tmp);
@@ -184,7 +221,6 @@ void SSL_Refbox_Rules::run() {
 			}
 			refbox_cmd_alt = refbox_cmd;
 		}
-
 		// Ball
 		ball_model = filter_data->get_ball_model();
 		result = PL_put_integer(ball_pos_x, ball_model.pos.x);
@@ -197,7 +233,6 @@ void SSL_Refbox_Rules::run() {
 		result = PL_put_integer(ball_last_touched_id, ball_model.last_touched_robot.y);
 		result = PL_put_integer(ball_status, ball_model.status);
 		PL_call_predicate(NULL, PL_Q_NORMAL, set_ball_stuff, ball_pos_x);
-
 		// Robots
 		for (int team = 0; team < Filter_Data::NUMBER_OF_TEAMS; ++team) {
 			for (int id = 0; id < Filter_Data::NUMBER_OF_IDS; ++id) {
@@ -218,7 +253,7 @@ void SSL_Refbox_Rules::run() {
 		// Load and save GUI-update for broken rules
 		broken_rule_vector.clear();
 		broken_rule_vector = filter_data->get_broken_rules();
-		// vektor will not be cleared. All ever broken rules are contained in the vektor
+        // vektor will not be cleared. All ever broken rules are contained in the vektor
 //        for ( std::vector<Broken_Rule>::iterator brit =
 //                    broken_rule_vector.begin(); brit != broken_rule_vector.end(); ) {
 //            if ( ( cur_timestamp - brit->when_broken ) > 5000 ) {
@@ -395,16 +430,16 @@ void SSL_Refbox_Rules::run() {
 //                o << cur_timestamp << " rule " << broken_rule_gui.rule_number <<
 //                " overridden";
 //                LOG4CXX_DEBUG ( logger, o.str() );
-				brit->when_broken = broken_rule_gui.when_broken;
-				brit->freekick_pos = broken_rule_gui.freekick_pos;
-				brit->rule_breaker = broken_rule_gui.rule_breaker;
-				brit->circle_around_ball = broken_rule_gui.circle_around_ball;
-				brit->defense_area = broken_rule_gui.defense_area;
-				brit->line_for_smth = broken_rule_gui.line_for_smth;
-				brit->standing = broken_rule_gui.standing;
-				broken_rule_modified = true;
-			}
-		}
+                brit->when_broken = broken_rule_gui.when_broken;
+                brit->freekick_pos = broken_rule_gui.freekick_pos;
+                brit->rule_breaker = broken_rule_gui.rule_breaker;
+                brit->circle_around_ball = broken_rule_gui.circle_around_ball;
+                brit->defense_area = broken_rule_gui.defense_area;
+                brit->line_for_smth = broken_rule_gui.line_for_smth;
+                brit->standing = broken_rule_gui.standing;
+                broken_rule_modified = true;
+            }
+        }
 		if (!broken_rule_modified && broken_rule_gui.rule_number != -42) {
 			broken_rule_vector.push_back(broken_rule_gui);
 			std::ostringstream o;

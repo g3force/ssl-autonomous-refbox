@@ -74,7 +74,8 @@ void Filter_Data::move_balls ( double ms, const Robot_Sample_List& robots )
 }
 
 void Filter_Data::set_robot_samples ( int team, int id,
-                                      const Robot_Sample_List& robots )
+//                                      const Robot_Sample_List& robots )
+        Robot_Sample_List& robots )
 {
     assert ( team >= 0 && team < NUMBER_OF_TEAMS );
     assert ( id >= 0 && id < NUMBER_OF_IDS );
