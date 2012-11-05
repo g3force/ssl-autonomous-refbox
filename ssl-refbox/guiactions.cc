@@ -1,3 +1,7 @@
+/**
+ * @file guiactions.cc
+ * @brief GuiActions source file
+ */
 #include "ui_GuiControls.h"
 #include "gamearea.h"
 #include "guiactions.h"
@@ -24,6 +28,9 @@ GuiActions::GuiActions(Ui::GuiControls* gui, QObject* win) :
 GuiActions::~GuiActions() {
 }
 
+/**
+ * @brief Connection of slots and signals.
+ */
 void GuiActions::connectActions() {
 	connect(m_gui->actionAbout_Qt, SIGNAL ( triggered() ), qApp, SLOT ( aboutQt() ));
 	connect(m_gui->actionFull_Screen, SIGNAL ( toggled ( bool ) ), this, SLOT ( fullscreen ( bool ) ));
@@ -93,6 +100,10 @@ void GuiActions::connectActions() {
 			SLOT ( brokenRuleRowSelected( QModelIndex ) ));
 }
 
+/**
+ * @brief SLOT: Set or left fullscreen mode
+ * @param f true: set fullscreen mode; flase: left fullscreen mode
+ */
 void GuiActions::fullscreen(bool f) {
 	QWidget* win = qobject_cast<QWidget*>(parent());
 	if (f) {
@@ -102,6 +113,14 @@ void GuiActions::fullscreen(bool f) {
 	}
 }
 
+/**
+ * @brief SLOT: Initialize time slider
+ * @param min
+ * @param max
+ * @param singleStep
+ * @param pageStep
+ * @param tickInterval
+ */
 void GuiActions::initializeSlider(int min, int max, int singleStep, int pageStep, int tickInterval) {
 	m_gui->horizontalSlider->setRange(min, max);
 	m_gui->horizontalSlider->setSingleStep(singleStep);
@@ -111,6 +130,10 @@ void GuiActions::initializeSlider(int min, int max, int singleStep, int pageStep
 	m_gui->horizontalSlider->setTickInterval(tickInterval);
 }
 
+/**
+ * @brief SLOT: Resize time slider
+ * @param width
+ */
 void GuiActions::resizeSlider(int width) {
 	//distances
 	int top = m_gui->log_backward->geometry().top();
@@ -142,18 +165,34 @@ void GuiActions::resizeSlider(int width) {
 	m_gui->log_totalFrames->setGeometry((width_new + dist_x) * 3, top + (height + dist_y) * 2, width_new, height);
 }
 
+/**
+ * @brief SLOT: changes the text of the record button
+ * @param text new text
+ */
 void GuiActions::change_record_button(QString text) {
 	m_gui->record_log->setText(text);
 }
 
+/**
+ * @brief SLOT: changes the text of the play button
+ * @param text new text
+ */
 void GuiActions::change_play_button(QString text) {
 	m_gui->load_log->setText(text);
 }
 
+/**
+ * @brief SLOT: changes the text of ball status label
+ * @param text new text
+ */
 void GuiActions::change_ball_status(QString text) {
 	m_gui->ball_status->setText(text);
 }
 
+/**
+ * @brief SLOT: changes the text of ball last touched label
+ * @param text new text
+ */
 void GuiActions::change_ball_last_touched(QString text) {
 	m_gui->ball_last_touched->setText(text);
 }

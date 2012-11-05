@@ -1,8 +1,15 @@
+/**
+ * @file guiactions.h
+ * @brief GuiActions header file
+ */
 #include <QObject>
 #include <QStandardItemModel>
 #include "filter_data.h"
 namespace Ui { class GuiControls; }
 
+/**
+ * @brief Connect slots with signals of the UI "GuiControls"
+ */
 class GuiActions : public QObject
 {
 Q_OBJECT

@@ -690,6 +690,9 @@ int SSLVision::start_play_record(QString logFile) {
 		// What data shall I read?
 		fileName = QFileDialog::getOpenFileName((QWidget*) this->parent(), tr("Open Logfile"), fileName,
 				tr("Log Files (*.log)"));
+
+		Global::config.add("log_file", fileName.toStdString() );
+		Global::saveConfig();
 	} else {
 		fileName = logFile;
 	}
