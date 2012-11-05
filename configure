@@ -3,7 +3,7 @@
 cd ssl-refbox
 
 if [ ! -f ssl-refbox.pro ]; then
-	plld --version > /dev/null
+	plld --version &> /dev/null
 	if [ "$?" == "0" ]; then
 		echo "plld installed"
 		sed 's/swipl-ld/plld/g' ssl-refbox.pro.template > ssl-refbox.pro.tmp

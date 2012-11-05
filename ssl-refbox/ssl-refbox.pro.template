@@ -10,7 +10,7 @@ CONFIG += qt \
 PKGCONFIG += swipl
 DEPENDPATH += ../libbsmart ../proto ../ConfigFile
 INCLUDEPATH += ../ /usr/lib/swi-prolog/include/
-LIBS += -lprotobuf -lglut -llog4cxx
+LIBS += -lprotobuf -lglut -llog4cxx -lGLU
 QMAKE_LINK = swipl-ld ssl_refbox_rules_prolog.pl
 HEADERS += glextra.h \
  gamearea.h \

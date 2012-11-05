@@ -95,7 +95,7 @@ SSLVision::~SSLVision() {
 void SSLVision::run() {
 	LOG4CXX_DEBUG( logger, "run()");
 
-	if(Global::logFile != NULL) {
+	if (Global::logFile != NULL) {
 		play_record(Global::logFile);
 	}
 
@@ -433,7 +433,6 @@ void SSLVision::process(Transformed_Percept& trans_perc, char color) {
 //		|| (robot.pixel_x() - robot_r < 0) ) {
 //		continue;
 //		}
-
 		Robot_Percept pRobot;
 		pRobot.x = robot.x();
 		pRobot.y = robot.y();
@@ -668,7 +667,7 @@ int SSLVision::start_play_record(QString logFile) {
 	LOG4CXX_INFO( logger, "Start Play Record");
 	std::ostringstream o;
 
-	if(logFile.isEmpty()) {
+	if (logFile.isEmpty()) {
 		//change fileName into directory
 		if (fileName != QDir::homePath()) {
 			int last_slash = 0;
@@ -699,11 +698,15 @@ int SSLVision::start_play_record(QString logFile) {
 	// critical line
 	else if (!logs.ParseFromIstream(&input)) {
 		LOG4CXX_ERROR( logger, "Failed to parse Logfile.");
-		return -1;
+		//workaround for the issue of loading too big files - not a definitive solution !
+		//	return -1;
 	}
 
 	LOG4CXX_INFO( logger, "File successfully loaded");
-	if (logs.IsInitialized() && logs.log_size() > 0 && logs.log(0).IsInitialized()) {
+	//workaround for the issue of loading too big files - not a definitive solution !
+	//if (logs.IsInitialized() && logs.log_size() > 0
+	//		&& logs.log(0).IsInitialized()) {
+	if (logs.log_size() > 0) {
 		o.str("");
 		o << "Size of logfile: " << logs.log_size();
 		LOG4CXX_INFO( logger, o.str());
