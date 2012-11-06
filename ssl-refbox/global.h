@@ -26,6 +26,6 @@ public:
 	static ConfigFile config;
 	static char* logFile;
 	static void loadConfig(string);
-	static void saveConfig();
+	static bool saveConfig();
 };
 #endif

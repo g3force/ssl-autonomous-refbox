@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <libgen.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -101,13 +103,15 @@ void Global::loadConfig(string custConfig) {
 /**
  * @brief Save config file.
  */
-void Global::saveConfig() {
+bool Global::saveConfig() {
 
 	std::ofstream out(configFilePath.c_str());
 	if (out) {
 		out << Global::config;
 		LOG4CXX_INFO( logger42, "ConfigFile " + configFilePath + " saved.");
+		return true;
 	}
+	return false;
 }
 
 /**
@@ -135,7 +139,7 @@ void Global::setConfigPath() {
 }
 
 /**
- * TODO create a config file with default values
+ * @brief create a config file with default values
  */
 void Global::createDefaultConfigFile(string path) {
 	config.add("ssl_vision_ip", "224.5.23.2");
@@ -147,7 +151,17 @@ void Global::createDefaultConfigFile(string path) {
 	config.add("cam_height", "580");
 	config.add("cam_width", "780");
 
-	saveConfig();
-	LOG4CXX_INFO( logger42, "Default ConfigFile " + path + " created.");
+	struct stat st;
+	if (stat(path.c_str(), &st) != 0) {
+		char* confPath = new char[path.length()];
+		strcpy(confPath, path.c_str());
+		mkdir(dirname(confPath), S_IRWXU | S_IRWXG | S_IRWXO);
+	}
+
+	if (saveConfig()) {
+		LOG4CXX_INFO( logger42, "Default ConfigFile " + path + " created.");
+	} else {
+		LOG4CXX_ERROR( logger42, "Default ConfigFile " + path + " could not be created.");
+	}
 }
 
