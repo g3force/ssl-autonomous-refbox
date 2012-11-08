@@ -1,3 +1,9 @@
+ssl-autonomous-refbox (0.1ubuntu3) precise; urgency=low
+
+  * fixed big log file issue
+
+ -- Nicolai Ommer <nicolai.ommer@gmail.com>  Tue, 06 Nov 2012 09:00:24 +0100
+
 ssl-autonomous-refbox (0.1ubuntu2) lucid; urgency=low
 
   * no make clean done before creating package... might be the cause for
