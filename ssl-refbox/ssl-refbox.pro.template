@@ -2,7 +2,8 @@ TEMPLATE = app
 PATH += "/usr/bin"
 TARGET = ../bin/ssl-autonomous-refbox
 CONFIG += qt \
- debug \
+# compiling in debug conflicts with swipl-ld (prolog can not find resource in binary file)
+# debug \
  console \
  thread \
  warn_on \

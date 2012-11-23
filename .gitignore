@@ -6,7 +6,7 @@ log
 *.orig
 .bzr
 .bzrignore
-bin/ssl-autonomous-refbox
+bin
 ssl-refbox/tags
 ssl-refbox/ssl-refbox.pro
 ssl-refbox/moc_*
